@@ -12,8 +12,7 @@ router.get('/', async (req, res) => {
         const products = await productmanager.getProducts()
         let query = req.query // encontrar el query
         let limit = Number(Object.values(query))// conseguir que numero es el limit
-        //console.log(limit)
-        //console.log(products)
+
         if (!limit) {
             res.send(products)
         } else if (limit < products.length) {
@@ -29,9 +28,7 @@ router.get('/', async (req, res) => {
 router.get('/:pid', async (req, res) => {
     const products = await productmanager.getProducts()
     let id = Number(Object.values(req.params))
-    //console.log(id)
     const prod = await productmanager.getProductByID(id)
-    // console.log(prod)
     res.send(prod)
 })
 

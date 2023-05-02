@@ -3,7 +3,7 @@
     "title": "uno",
     "description": "el primero",
     "price": 100,
-    "thumbnail": "prueba",
+    "thumbnail": "https://mijormi.vteximg.com.br/arquivos/ids/174374-1000-1332/Cuadro-abstracto-bastidor-grande-ORGANIC-1-50X70-Landmark-0.jpg?v=637752851136500000",
     "code": 123,
     "stock": 7,
     "id": 1
@@ -12,7 +12,7 @@
     "title": "DOS",
     "description": "el segundo",
     "price": 100,
-    "thumbnail": "www.algo.com",
+    "thumbnail": "https://mijormi.vteximg.com.br/arquivos/ids/174378-1000-1332/Cuadro-abstracto-bastidor-grande-ORGANIC-2-50X70-Landmark-0.jpg?v=637752853857600000",
     "code": 2345,
     "stock": 7,
     "id": 2
@@ -21,7 +21,7 @@
     "title": "TRES",
     "description": "cambio prueba",
     "price": 100,
-    "thumbnail": "www.algo.com",
+    "thumbnail": "https://mijormi.vteximg.com.br/arquivos/ids/175294-1000-1332/Cuadro-abstracto-blanco-y-negro-ABSTRACT-2-50X70-Landmark-0.jpg?v=637824377631930000",
     "code": 25545,
     "stock": 7,
     "id": 3
@@ -31,7 +31,7 @@
     "description": "el cuarto",
     "price": 120,
     "status": true,
-    "thumbnail": "algo",
+    "thumbnail": "https://cdn.shopify.com/s/files/1/0402/7029/9298/products/LMMN_0e79c623-b893-4f1b-bfed-d565e8915347_1024x.png?v=1663745221",
     "code": 172,
     "stock": 3,
     "id": 4

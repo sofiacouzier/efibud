@@ -1,0 +1,36 @@
+.product {
+    background-color: rgb(255, 255, 255);
+    width: 300px;
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+    margin: 35px;
+    margin-top: 80px;
+    display: inline-block;
+    border-radius: 10px;
+    border-style: groove;
+}
+
+.nombre {
+    font-weight: 220;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.desc {
+    font-weight: 100;
+    font-size: medium;
+    margin: 10px;
+}
+
+.code {
+    font-weight: 300;
+    font-size: small;
+}
+
+.img {
+    max-height: 200px;
+    max-width: 240px;
+    border-color: black;
+    border-width: 50px;
+}
