@@ -37,5 +37,5 @@ io.on('connection', async socket => {
     console.log("Nuevo cliente conectado");
     const p = await productmanager.getProducts()
 
-    io.emit("entregando productos", p)
+    io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })

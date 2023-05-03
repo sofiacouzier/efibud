@@ -1,4 +1,4 @@
-console.log('first')
+//console.log('first')
 const productos = document.getElementById("productos")
 
 const socket = io()

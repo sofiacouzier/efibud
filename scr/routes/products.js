@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
         const result = await productmanager.addProducts(product)
         const everyProd = await productmanager.getProducts()
         if (result.status === 'error') return res.status(400).send({ result }); else {
-            req.io.emit("entregando productos", everyProd)
+            req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
             return res.status(200).send({ result });
         }
 
@@ -72,7 +72,7 @@ router.delete("/:pid", async (req, res) => {
         const everyProd = await productmanager.getProducts()
 
         if (result.status === 'error') return res.status(400).send({ result });
-        req.io.emit("entregando productos", everyProd)
+        req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
 
         return res.status(200).send({ message: "producto eliminado" });
 
