@@ -22,7 +22,10 @@ app.use(express.static(`${__dirname}/public`))
 app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`);
 app.set("view engine", 'handlebars')
-
+app.use((req, res, next) => {
+    req.io = io;
+    next()
+})
 app.use('/api/products', productRouter)
 app.use('/api/cart', cartrouter)
 
@@ -31,8 +34,8 @@ app.use('/', viewsRouter);
 
 
 io.on('connection', async socket => {
-    const p = await productmanager.getProducts()
     console.log("Nuevo cliente conectado");
-    socket.emit("logs")
+    const p = await productmanager.getProducts()
+
     io.emit("entregando productos", p)
 })

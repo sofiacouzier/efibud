@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ProductManager from "../../Managers/ProductManager.js";
 
+
 const productmanager = new ProductManager
 
 const router = Router()
@@ -36,12 +37,13 @@ router.get('/:pid', async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const product = req.body
-
         const result = await productmanager.addProducts(product)
+        const everyProd = await productmanager.getProducts()
+        if (result.status === 'error') return res.status(400).send({ result }); else {
+            req.io.emit("entregando productos", everyProd)
+            return res.status(200).send({ result });
+        }
 
-        if (result.status === 'error') return res.status(400).send({ result });
-
-        return res.status(200).send({ result });
     } catch (error) {
         console.log(error)
     }
@@ -67,8 +69,10 @@ router.delete("/:pid", async (req, res) => {
     try {
         const id = Number(Object.values(req.params))
         const result = await productmanager.deleteProduct(id)
+        const everyProd = await productmanager.getProducts()
 
         if (result.status === 'error') return res.status(400).send({ result });
+        req.io.emit("entregando productos", everyProd)
 
         return res.status(200).send({ message: "producto eliminado" });
 
