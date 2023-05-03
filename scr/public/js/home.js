@@ -1,3 +1,3 @@
 console.log("hola")
 
-const socket = io()
+//const socket = io()

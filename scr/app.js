@@ -7,7 +7,10 @@ import productRouter from "./routes/products.js";
 import cartrouter from "./routes/cart.js";
 import viewsRouter from "./routes/views.router.js"
 
+
+
 const productmanager = new ProductManager
+
 const app = express()
 const server = app.listen(8080, () => console.log("Listening on 8080"))
 const io = new Server(server)
@@ -27,7 +30,9 @@ app.use('/api/cart', cartrouter)
 app.use('/', viewsRouter);
 
 
-io.on('connection', socket => {
+io.on('connection', async socket => {
+    const p = await productmanager.getProducts()
     console.log("Nuevo cliente conectado");
     socket.emit("logs")
+    io.emit("entregando productos", p)
 })
