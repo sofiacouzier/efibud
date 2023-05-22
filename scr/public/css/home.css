@@ -29,8 +29,7 @@
 }
 
 .img {
-    max-height: 200px;
-    max-width: 240px;
+    max-width: 200px;
     border-color: black;
     border-width: 50px;
 }

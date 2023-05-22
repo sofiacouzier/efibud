@@ -1,5 +1,6 @@
 <ul id="productos">
-    {{#each value}}
+
+    {{#each p}}
     <div class="product">
         <img class="img" src={{this.thumbnail}}>
         <h1 class="nombre">{{this.title}}</h1>
@@ -9,7 +10,6 @@
         <br />
     </div>
     {{/each}}
+
+
 </ul>
-<script src="/socket.io/socket.io.js"></script>
-<script src="js/home.js"></script>
-<script src="/js/home.js"></script>
