@@ -16,7 +16,8 @@ import registerChatHandler from "./listeners/chatHandler.js";
 //const productmanager = new ProductManager
 
 const app = express()
-const server = app.listen(8080, () => console.log("Listening on 8080"))
+const PORT = process.env.PORT || 8080
+const server = app.listen(PORT, () => console.log("Listening on 8080"))
 const connection = mongoose.connect("mongodb+srv://sofiacouzier:123@cluster0.crz5vth.mongodb.net/?retryWrites=true&w=majority")
 const io = new Server(server)
 
@@ -44,7 +45,7 @@ app.use('/', viewsRouter);
 
 io.on('connection', async socket => {
     registerChatHandler(io, socket);
-    // console.log("Nuevo cliente conectado");
+    console.log("Nuevo cliente conectado");
     // const p = await productmanager.getProducts()
 
     // io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos

@@ -59,81 +59,81 @@ class CartManager {
 
     }
 
-    updateQuantity = async (cid, pid, nuevaCantidad) => {
-        try {
-            const carts = await this.getCart()
-            let cart = carts.find(cart => cart.id === cid)
-            const productos = cart.products
+    // updateQuantity = async (cid, pid, nuevaCantidad) => {
+    //     try {
+    //         const carts = await this.getCart()
+    //         let cart = carts.find(cart => cart.id === cid)
+    //         const productos = cart.products
 
-            const index = productos.findIndex((prod) => prod.productid === pid);//encuentra el producto y su index (getElementByID no sirve)
-
-
-            const productUpdate = {
-                ...productos[index],//de todos los products toma el que encontro arriba
-                ...nuevaCantidad
-            };//de todos los keys toma el que yo le doy y lo cambia (por estar mas abajo ->destructioning)
-
-            productos[index] = productUpdate;// toma el objeto y lo cambia por el de arriba
-            // console.log(cart)
-            // carts.push(cart)
-            // console.log(carts)
-
-            await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2));//reescribe el archivo
-            return productUpdate;
-
-        } catch (error) {
-            console.error(error);
-        }
-
-    }
+    //         const index = productos.findIndex((prod) => prod.productid === pid);//encuentra el producto y su index (getElementByID no sirve)
 
 
+    //         const productUpdate = {
+    //             ...productos[index],//de todos los products toma el que encontro arriba
+    //             ...nuevaCantidad
+    //         };//de todos los keys toma el que yo le doy y lo cambia (por estar mas abajo ->destructioning)
 
-    addProductsToCart = async (cid, pid, quantity) => {
-        const carts = await this.getCart()
-        let cart = carts.find(cart => cart.id === cid)
-        if (cart) {
-            const prodToAdd = await pm.getProductByID(pid)
-            //let prodToAdd = products.find(prodToAdd => prodToAdd.id === pid)
-            if (prodToAdd) {
+    //         productos[index] = productUpdate;// toma el objeto y lo cambia por el de arriba
+    //         // console.log(cart)
+    //         // carts.push(cart)
+    //         // console.log(carts)
 
-                const index = cart.products.find(product => product.productid === pid) //miro si existe el producto en el carrito
-                //console.log(index)
+    //         await fs.promises.writeFile(this.path, JSON.stringify(carts, null, 2));//reescribe el archivo
+    //         return productUpdate;
 
-                if (!index) {
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
 
-                    const addedProd = {
-                        "productid": prodToAdd.id,
-                        "quantity": quantity
-                    }
-                    cart.products.push(addedProd);
-
-                    await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-
-                    return cart
-                } else {
-                    const cantidad = index.quantity// si ya existe veo cual es la cantidad
-                    const nuevaCant = cantidad + quantity// le sumo la cantidad que quizo agregar
-                    const nuevaCantidad = { "quantity": nuevaCant }
-                    const nuevp = await this.updateQuantity(cid, pid, nuevaCantidad)
-                    return nuevp
-                }
-
-                //console.log(nuevaCantidad)
+    // }
 
 
 
-            } else {
-                console.log("no existe el producto")
-                return null
+    // addProductsToCart = async (cid, pid, quantity) => {
+    //     const carts = await this.getCart()
+    //     let cart = carts.find(cart => cart.id === cid)
+    //     if (cart) {
+    //         const prodToAdd = await pm.getProductByID(pid)
+    //         //let prodToAdd = products.find(prodToAdd => prodToAdd.id === pid)
+    //         if (prodToAdd) {
 
-            }
+    //             const index = cart.products.find(product => product.productid === pid) //miro si existe el producto en el carrito
+    //             //console.log(index)
 
-        } else {
-            console.log("carrito inexistente")
-            return null
-        }
-    }
+    //             if (!index) {
+
+    //                 const addedProd = {
+    //                     "productid": prodToAdd.id,
+    //                     "quantity": quantity
+    //                 }
+    //                 cart.products.push(addedProd);
+
+    //                 await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
+
+    //                 return cart
+    //             } else {
+    //                 const cantidad = index.quantity// si ya existe veo cual es la cantidad
+    //                 const nuevaCant = cantidad + quantity// le sumo la cantidad que quizo agregar
+    //                 const nuevaCantidad = { "quantity": nuevaCant }
+    //                 const nuevp = await this.updateQuantity(cid, pid, nuevaCantidad)
+    //                 return nuevp
+    //             }
+
+    //             //console.log(nuevaCantidad)
+
+
+
+    //         } else {
+    //             console.log("no existe el producto")
+    //             return null
+
+    //         }
+
+    //     } else {
+    //         console.log("carrito inexistente")
+    //         return null
+    //     }
+    // }
 
     // updateProduct = async (id, updatedFields) => {
 
