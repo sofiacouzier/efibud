@@ -1,6 +1,6 @@
 <ul id="productos">
 
-    {{#each p}}
+    {{#each produ}}
     <div class="product">
         <img class="img" src={{this.thumbnail}}>
         <h1 class="nombre">{{this.title}}</h1>
@@ -10,6 +10,12 @@
         <br />
     </div>
     {{/each}}
-
-
+    <br>
+    {{#if hasPrevPage}}
+    <a href="/?page={{prevPage}}"><button>Anterior</button></a>
+    {{/if}}
+    {{page}}
+    {{#if hasNextPage}}
+    <a href="/?page={{nextPage}}"><button>Siguiente</button></a>
+    {{/if}}
 </ul>

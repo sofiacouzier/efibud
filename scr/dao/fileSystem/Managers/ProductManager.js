@@ -3,7 +3,7 @@ import fs from 'fs'
 
 class ProductManager {
     constructor() {
-        this.path = "./files/products.json";
+        this.path = "../files/products.json";
     }
     //metodos
 
@@ -12,6 +12,7 @@ class ProductManager {
         if (fs.existsSync(this.path)) {
             const data = await fs.promises.readFile(this.path, "utf-8");
             const products = JSON.parse(data);
+
             return products
         }
         return []

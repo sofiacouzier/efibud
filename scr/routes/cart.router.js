@@ -39,6 +39,13 @@ router.get('/:cid', async (req, res) => {
     return res.send({ status: 'success', payload: product })
 })
 
+router.delete('/:cid', async (req, res) => {
+    const { cid } = req.params
+    const cart = await cartsService.deleteCart({ _id: cid });
+    return res.send({ status: 'success' })
+
+})
+
 
 
 // router.delete('/:pid', async (req, res) => {

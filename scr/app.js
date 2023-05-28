@@ -5,7 +5,7 @@ import __dirname from "./utils.js";
 import mongoose from "mongoose";
 import ProductSRouter from "./routes/product.router.js";
 import CartRouter from "./routes/cart.router.js";
-//import ProductManager from "../Managers/ProductManager.js";
+import ProductManager from "./dao/fileSystem/Managers/ProductManager.js"
 //import productRouter from "./routes/products.js";
 //import cartrouter from "./routes/cart.js";
 import viewsRouter from "./routes/views.router.js";
@@ -13,7 +13,7 @@ import registerChatHandler from "./listeners/chatHandler.js";
 
 
 
-//const productmanager = new ProductManager
+const productmanager = new ProductManager
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -46,7 +46,7 @@ app.use('/', viewsRouter);
 io.on('connection', async socket => {
     registerChatHandler(io, socket);
     console.log("Nuevo cliente conectado");
-    // const p = await productmanager.getProducts()
-
-    // io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
+    const p = await productmanager.getProducts()
+    console.log(p)
+    io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })

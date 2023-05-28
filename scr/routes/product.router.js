@@ -6,7 +6,7 @@ const productsService = new ProductsManager();
 
 router.get('/', async (req, res) => {
     const produ = await productsService.getProducts();
-    res.send({ status: 'success', payload: produ })
+    res.send({ status: 201, payload: produ })
 })
 
 router.post('/', async (req, res) => {
@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
         code,
         stock
     };
+
     const result = await productsService.createProduct(p);
     res.sendStatus(201)
 })

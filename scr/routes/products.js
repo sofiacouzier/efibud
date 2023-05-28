@@ -9,17 +9,28 @@ const router = Router()
 
 router.get('/', async (req, res) => {
     try {
+        const { page = 1 } = req.query;
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productsService.paginate({}, { page, limit: 10, lean: true });
 
-        const products = await productmanager.getProducts()
-        let query = req.query // encontrar el query
-        let limit = Number(Object.values(query))// conseguir que numero es el limit
+        const produ = docs
 
-        if (!limit) {
-            res.send(products)
-        } else if (limit < products.length) {
-            const limitedProd = products.slice(0, limit)// slice: (de donde empieza hasta el ultimo incluido)
-            return res.status(200).send(limitedProd)
-        }
+        res.render('home', {
+            produ,
+            page: rest.page
+        })
+
+
+
+        // const products = await productmanager.getProducts()
+        // let query = req.query // encontrar el query
+        // let limit = Number(Object.values(query))// conseguir que numero es el limit
+
+        // if (!limit) {
+        //     res.send(products)
+        // } else if (limit < products.length) {
+        //     const limitedProd = products.slice(0, limit)// slice: (de donde empieza hasta el ultimo incluido)
+        //     return res.status(200).send(limitedProd)
+        // }
     } catch (error) {
         console.log(error)
     }
