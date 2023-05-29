@@ -36,7 +36,7 @@ router.get('/:cid', async (req, res) => {
     const { cid } = req.params;
     const cart = await cartsService.getCartByID({ _id: cid });
     if (!cart) res.status(404).send({ status: "error", error: "cart not found" })
-    return res.send({ status: 'success', payload: product })
+    return res.send({ status: 'success', payload: cart })
 })
 
 router.delete('/:cid', async (req, res) => {
@@ -46,17 +46,20 @@ router.delete('/:cid', async (req, res) => {
 
 })
 
+router.delete('/:cid/products/:pid', async (req, res) => {
+    const { cid } = req.params
+    const { pid } = req.params
+    const cart = await cartsService.deleteProduct(cid, pid);
+    return res.send({ status: 'success' })
 
+})
 
-// router.delete('/:pid', async (req, res) => {
-//     const { pid } = req.params;
-//     try {
-//         await productsService.deleteProduct(pid);
-//         res.sendStatus(201)
-//     } catch (error) {
-//         console.log(error)
-//     }
-
-// })
+router.put('/:cid/products/:pid', async (req, res) => {
+    const { cid } = req.params
+    const { pid } = req.params
+    const { quantity } = req.body;
+    const cart = await cartsService.updateQuantity(cid, pid, quantity);
+    return res.send({ status: 'success' })
+})
 
 export default router

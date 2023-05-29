@@ -1,1 +1,12 @@
 <h1>cart</h1>
+{{#each docs}}
+<div class="product">
+    <img class="img" src={{this.product.thumbnail}}>
+    <h1 class="nombre">{{this.product.title}}</h1>
+    <h3 class="desc">{{this.product.description}}</h3>
+    <h5 class="code">code:{{this.product.code}}</h5>
+    <h4 class="desc">precio:{{this.product.price}}</h4>
+    <br />
+    <h2>cantidad {{this.quantity}}</h2>
+</div>
+{{/each}}
