@@ -1,3 +1,9 @@
+{{#if user}}
+<div>
+    <h1>Hola, {{user.name}}</h1>
+    <p>Correo: {{user.email}}</p>
+</div>
+{{/if}}
 <ul id="productos">
 
     {{#each produ}}

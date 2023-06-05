@@ -10,20 +10,19 @@ const router = Router();
 const productsService = new ProductsManager();
 const cartsService = new CartsManager()
 router.get('/', async (req, res) => {
-    // const s = req.params
+    const { sort = 1 } = req.query
     const { lim = 10 } = Number(Object.values(req.body))
     const { page = 1 } = req.query;
 
-    const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productModel.paginate({}, { page, limit: lim, lean: true }, {
-        sort: ({ price: 1 })
-    });
+    const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productModel.paginate({}, { page, limit: lim, lean: true, sort: { price: sort } });
 
     const produ = docs
     res.render('home', {
         produ,
         hasPrevPage, hasNextPage, prevPage, nextPage,
         page: rest.page,
-        css: 'home'
+        css: 'home',
+        user: req.session.user
     })
 
 })
@@ -53,6 +52,23 @@ router.get('/realtimeproducts', (req, res) => {
         css: "realtimeproducts"
     });
 })
+
+
+router.get('/register', (req, res) => {
+    res.render('register');
+})
+
+router.get('/login', (req, res) => {
+    res.render('login')
+})
+
+router.get('/profile', (req, res) => {
+    res.render('profile', {
+        user: req.session.user
+    })
+})
+
+
 
 
 
