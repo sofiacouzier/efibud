@@ -4,6 +4,7 @@ import ProductsManager from "../dao/mongo/Managers/products.js";
 import productModel from "../dao/mongo/models/product.js";
 import cartModel from "../dao/mongo/models/cart.js"
 import CartsManager from "../dao/mongo/Managers/carts.js";
+import { privacy } from "../middlewares/auth.js";
 //const pm = new ProductManager
 
 const router = Router();
@@ -54,15 +55,15 @@ router.get('/realtimeproducts', (req, res) => {
 })
 
 
-router.get('/register', (req, res) => {
+router.get('/register', privacy('NO_AUTHENTICATED'), (req, res) => {
     res.render('register');
 })
 
-router.get('/login', (req, res) => {
+router.get('/login', privacy('NO_AUTHENTICATED'), (req, res) => {
     res.render('login')
 })
 
-router.get('/profile', (req, res) => {
+router.get('/profile', privacy('PRIVATE'), (req, res) => {
     res.render('profile', {
         user: req.session.user
     })
