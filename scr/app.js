@@ -12,7 +12,11 @@ import ProductManager from "./dao/fileSystem/Managers/ProductManager.js"
 //import cartrouter from "./routes/cart.js";
 import viewsRouter from "./routes/views.router.js";
 import registerChatHandler from "./listeners/chatHandler.js";
-import sessionRouter from './routes/session.router.js'
+import sessionRouter from './routes/session.router.js';
+import passport from 'passport';
+import initializePassportStrategies from "./config/passport.config.js";
+
+
 
 const productmanager = new ProductManager
 
@@ -45,6 +49,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+
+
+app.use(passport.initialize());
+initializePassportStrategies();
 
 app.use('/api/products', ProductSRouter)
 app.use('/api/cart', CartRouter)

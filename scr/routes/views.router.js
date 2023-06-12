@@ -68,10 +68,15 @@ router.get('/profile', privacy('PRIVATE'), (req, res) => {
         user: req.session.user
     })
 })
+router.get('/restorePassword', privacy('NO_AUTHENTICATED'), (req, res) => {
+    res.render('restorePassword')
+})
 
 
+router.get('/jwtProfile', (req, res) => {
+    res.render('jwtProfile')
 
-
+})
 
 
 

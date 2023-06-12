@@ -1,11 +1,11 @@
-const form = document.getElementById('loginForm');
+const form = document.getElementById("restoreForm");
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const data = new FormData(form);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
-    const response = await fetch('/api/sessions/jwtLogin', {
+    const response = await fetch('/api/sessions/restorePassword', {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -15,7 +15,6 @@ form.addEventListener('submit', async (event) => {
     const responseData = await response.json();
     console.log(responseData);
     if (responseData.status === 'success') {
-        localStorage.setItem('accessToken', responseData.accessToken)//Guarda token en el front, no en una cookie como session
         window.location.replace('/');
     }
-});
+})
