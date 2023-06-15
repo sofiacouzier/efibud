@@ -3,6 +3,8 @@ import passport from 'passport';
 import userModel from "../dao/mongo/models/users.js";
 import { createHash } from "../utils.js";
 import { validatePassword } from "../utils.js";
+import { generateToken } from "../utils.js";
+import { authToken } from '../middlewares/jwtAuth.js'
 
 const router = Router();
 
@@ -23,7 +25,7 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/api/se
     return res.redirect('/');
 })
 router.get('/loginFail', (req, res) => {
-    console.log('jola');
+    console.log('hola');
     if (req.session.messages.length > 4) return res.status(400).send({ message: "bloquear intentos" })
     res.status(400).send({ status: "error", error: req.session.messages });
 })
@@ -47,7 +49,7 @@ router.get('/jwtProfile', authToken, async (req, res) => {
 })
 
 
-router.post('jwtLogin', async (req, res) => {
+router.post('/jwtLogin', async (req, res) => {
     const { email, password } = req.body;
     let accessToken;
     if (email === 'admin@admin.com' && password === '123') {
