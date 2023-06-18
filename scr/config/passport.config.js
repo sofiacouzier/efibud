@@ -38,7 +38,8 @@ const initializePassportStrategies = () => {
     );
 
     passport.use('login',
-        new LocalStrategy({ usernameField: 'email' },
+        new LocalStrategy(
+            { usernameField: 'email' },
             async (email, password, done) => {
 
                 if (email === "adminCoder@coder.com" && password === "123") {
@@ -53,12 +54,13 @@ const initializePassportStrategies = () => {
                 let user;
                 //buscar al usuario
                 user = await userModel.findOne({ email });
-                if (!user) return res.status(400).send({ status: "error", error: "Usuario o contraseña incorrectas" });
+                if (!user) return done(null, false, { message: 'Credenciales incorrectas' });
+
 
                 //Número 2!!!! si sí existe el usuario, verificar password.
 
                 const valid = await validatePassword(password, user.password)
-                if (!valid) return res.status(400).send({ status: "error", error: "contraseña incorrectas" });
+                if (!valid) return done(null, false, { message: 'Contraseña inválida' });
 
 
                 user = {

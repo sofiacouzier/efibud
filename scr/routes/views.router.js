@@ -79,5 +79,9 @@ router.get('/jwtProfile', (req, res) => {
 })
 
 
+router.get('/jwtLogin', (req, res) => {
+    res.render('login')
+
+})
 
 export default router;
