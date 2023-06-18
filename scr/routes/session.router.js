@@ -8,24 +8,25 @@ import { authToken } from '../middlewares/jwtAuth.js'
 
 const router = Router();
 
+
 router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/registerFail' }), async (req, res) => {
-    res.send({ status: "success", message: "Registered" });
-    res.redirect('/login')
+    res.send({ status: "success", message: "Registered" })
+
 })
 router.get('/registerFail', (req, res) => {
     console.log(req.session.messages);
     res.status(400).send({ status: "error", error: req.session.messages })
 })
-router.post('/login', passport.authenticate('login', { failureRedirect: '/loginFail', failureMessage: true }), async (req, res) => {
-    req.session.user = {
-        name: req.user.name,
-        role: req.user.role,
-        id: req.user.id,
-        email: req.user.email
-    }
-    console.log(req.session.user)
-    return res.redirect('/');
-})
+// router.post('/login', passport.authenticate('login', { failureRedirect: '/loginFail', failureMessage: true }), async (req, res) => {
+//     req.session.user = {
+//         name: req.user.name,
+//         role: req.user.role,
+//         id: req.user.id,
+//         email: req.user.email
+//     }
+//     console.log(req.session.user)
+//     return res.redirect('/');
+// })
 router.get('/loginFail', (req, res) => {
     console.log('hola');
     if (req.session.messages.length > 4) return res.status(400).send({ message: "bloquear intentos" })
@@ -58,7 +59,7 @@ router.get('/jwtProfile', authToken, async (req, res) => {
 router.post('/jwtLogin', async (req, res) => {
     const { email, password } = req.body;
     let accessToken;
-    if (email === 'admin@admin.com' && password === '123') {
+    if (email === 'adminCoder@coder.com' && password === '123') {
         const user = {
             id: 0,
             name: `Admin`,
@@ -75,8 +76,13 @@ router.post('/jwtLogin', async (req, res) => {
     if (!user)
         return res.sendStatus(400);
     const isValidPassword = await validatePassword(password, user.password);
-    if (!isValidPassword)
-        return res.sendStatus(400);
+    if (!isValidPassword) {
+
+
+        return res.sendStatus(400)
+    }
+
+
     user = {
         id: user._id,
         name: `${user.first_name} ${user.last_name}`,

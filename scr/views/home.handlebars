@@ -1,9 +1,6 @@
-{{#if user}}
-<div>
-    <h1>Hola, {{user.name}}</h1>
-    <p>Correo: {{user.email}}</p>
-</div>
-{{/if}}
+<h1 id="welcome"></h1>
+<h3 id="email"></h3>
+
 <ul id="productos">
 
     {{#each produ}}
@@ -27,5 +24,6 @@
     <a href="/?page={{nextPage}}"><button>Siguiente</button></a>
     {{/if}}
 </ul>
+<button id="logout"> cerrar sesion</button>
 
 <script src='/js/home.js'></script>

@@ -60,8 +60,9 @@ const initializePassportStrategies = () => {
                 //Número 2!!!! si sí existe el usuario, verificar password.
 
                 const valid = await validatePassword(password, user.password)
-                if (!valid) return done(null, false, { message: 'Contraseña inválida' });
-
+                if (!valid) {
+                    return done(null, false, { message: 'Contraseña inválida' });
+                }
 
                 user = {
                     id: user._id,
