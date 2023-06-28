@@ -3,6 +3,9 @@ import local from 'passport-local';
 import userModel from '../dao/mongo/models/users.js';
 import { createHash, validatePassword } from '../utils.js';
 import GithubStrategy from 'passport-github2';
+import { Strategy, ExtractJwt } from 'passport-jwt';
+import { cookieExtractor } from '../utils.js';
+
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
 
@@ -106,20 +109,15 @@ const initializePassportStrategies = () => {
                 }
             }
         ))
+    //verifico token de manera mas prolija
+    passport.use('jwt', new Strategy({
+        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: 'jwtSecret',
+    }, async (payload, done) => {
+        console.log("first")
+        return done(null, payload);
+    }))
 
-    passport.serializeUser(function (user, done) {
-        return done(null, user.id);
-    });
-    passport.deserializeUser(async function (id, done) {
-        if (id === 0) {
-            return done(null, {
-                role: "admin",
-                name: "ADMIN"
-            })
-        }
-        const user = await userModel.findOne({ _id: id });
-        return done(null, user);
-    });
 
 
 }

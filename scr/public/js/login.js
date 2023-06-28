@@ -1,13 +1,13 @@
-import Swal from "sweetalert2";
-
 const form = document.getElementById('loginForm');
+
+console.log(document.cookie);
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const data = new FormData(form);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
-    const response = await fetch('/api/sessions/jwtLogin', {
+    const response = await fetch('/api/sessions/login', {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -16,8 +16,12 @@ form.addEventListener('submit', async (event) => {
     });
     const responseData = await response.json();
     console.log(responseData);
-    if (responseData.status === 'success') {
-        localStorage.setItem('accessToken', responseData.accessToken)//Guarda token en el front, no en una cookie como session
-        window.location.replace('/');
-    }
+
+
+    //Si lo sigues enviando desde el response body
+    // if(responseData.status==="success") {
+    //   console.log(responseData);
+    //   localStorage.setItem('accessToken',responseData.accessToken)
+    // }
 });
+

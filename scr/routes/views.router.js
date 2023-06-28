@@ -4,13 +4,15 @@ import ProductsManager from "../dao/mongo/Managers/products.js";
 import productModel from "../dao/mongo/models/product.js";
 import cartModel from "../dao/mongo/models/cart.js"
 import CartsManager from "../dao/mongo/Managers/carts.js";
-import { privacy } from "../middlewares/auth.js";
+import { authRoles, privacy } from "../middlewares/auth.js";
+import { passportCall } from "../utils.js";
+
 //const pm = new ProductManager
 
 const router = Router();
 const productsService = new ProductsManager();
 const cartsService = new CartsManager()
-router.get('/', async (req, res) => {
+router.get('/', passportCall("jwt", { redirect: "/login" }), async (req, res) => {
     const { sort = 1 } = req.query
     const { lim = 10 } = Number(Object.values(req.body))
     const { page = 1 } = req.query;
@@ -23,7 +25,7 @@ router.get('/', async (req, res) => {
         hasPrevPage, hasNextPage, prevPage, nextPage,
         page: rest.page,
         css: 'home',
-        user: req.session.user
+        user: req.user
     })
 
 })
@@ -47,12 +49,12 @@ router.get('/carts/:cid', async (req, res) => {
 
 
 
-
 router.get('/realtimeproducts', (req, res) => {
     res.render('realtimeproducts', {
         css: "realtimeproducts"
     });
 })
+
 
 
 router.get('/register', privacy('NO_AUTHENTICATED'), (req, res) => {
@@ -72,9 +74,17 @@ router.get('/restorePassword', privacy('NO_AUTHENTICATED'), (req, res) => {
     res.render('restorePassword')
 })
 
+router.get('/admin', passportCall('jwt', { redirect: '/login' }), authRoles('admin'), (req, res) => {
+    console.log(req.user);
+    res.render('jwtProfile', { user: req.user })
 
-router.get('/jwtProfile', (req, res) => {
-    res.render('jwtProfile')
+})
+
+
+router.get('/jwtProfile', passportCall('jwt', { redirect: '/login' }), (req, res) => {
+    res.render('jwtProfile', {
+        user: req.user
+    })
 
 })
 
