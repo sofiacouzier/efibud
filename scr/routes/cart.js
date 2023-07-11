@@ -1,15 +1,14 @@
 import { Router } from "express";
-import CartManager from "../../Managers/CartManager.js";
+import { cartService } from "../dao/mongo/Managers/index.js";
 
 const cartrouter = Router()
 
-const cartManager = new CartManager
 
 cartrouter.post("/", async (req, res) => {
     try {
 
 
-        const result = await cartManager.createCart()
+        const result = await cartService.createCart()
 
         if (result.status === 'error') return res.status(400).send({ result });
 
@@ -22,7 +21,7 @@ cartrouter.post("/", async (req, res) => {
 cartrouter.get("/:cid", async (req, res) => {
     let id = Number(Object.values(req.params))
     //console.log(id)
-    const cart = await cartManager.getCartByID(id)
+    const cart = await cartService.getCartByID(id)
     // console.log(prod)
     res.send(cart.products)
 })
@@ -32,7 +31,7 @@ cartrouter.post("/:cid/product/:pid", async (req, res) => {
     let pid = Number(Object.values(req.params.pid))
     let quantity = Number(Object.values(req.body)) || 1
     console.log(quantity)
-    const newCart = await cartManager.addProductsToCart(cid, pid, quantity)
+    const newCart = await cartService.addProductsToCart(cid, pid, quantity)
     //console.log(newCart)
     return res.status(200).send({ newCart });
 })

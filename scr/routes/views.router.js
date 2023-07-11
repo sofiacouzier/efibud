@@ -1,18 +1,19 @@
 import { Router } from "express";
 //import ProductManager from "../dao/fileSystem/Managers/ProductManager.js";
-import ProductsManager from "../dao/mongo/Managers/products.js";
+//import ProductsManager from "../dao/mongo/Managers/products.js";
 import productModel from "../dao/mongo/models/product.js";
 import cartModel from "../dao/mongo/models/cart.js"
-import CartsManager from "../dao/mongo/Managers/carts.js";
+//import CartsManager from "../dao/mongo/Managers/carts.js";
 import { authRoles, privacy } from "../middlewares/auth.js";
-import { passportCall } from "../utils.js";
-
+import { passportCall } from "../services/auth.js";
+import { productService } from "../services/index.js";
 //const pm = new ProductManager
 
 const router = Router();
-const productsService = new ProductsManager();
-const cartsService = new CartsManager()
-router.get('/', passportCall("jwt", { redirect: "/login" }), async (req, res) => {
+//const productsService = new ProductsManager();
+//const cartsService = new CartsManager()
+router.get('/', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+    console.log(req.user)
     const { sort = 1 } = req.query
     const { lim = 10 } = Number(Object.values(req.body))
     const { page = 1 } = req.query;
@@ -65,7 +66,7 @@ router.get('/login', privacy('NO_AUTHENTICATED'), (req, res) => {
     res.render('login')
 })
 
-router.get('/profile', privacy('PRIVATE'), (req, res) => {
+router.get('/profile', passportCall("jwt", { redirect: "/login" }), (req, res) => {
     res.render('profile', {
         user: req.session.user
     })

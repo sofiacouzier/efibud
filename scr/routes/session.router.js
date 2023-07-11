@@ -1,101 +1,146 @@
 import { Router } from "express";
 import passport from 'passport';
 import userModel from "../dao/mongo/models/users.js";
-import { createHash } from "../utils.js";
-import { validatePassword } from "../utils.js";
-import { generateToken } from "../utils.js";
+import { passportCall, createHash, validatePassword, generateToken } from "../services/auth.js";
 import { authToken } from '../middlewares/jwtAuth.js'
-import { passportCall } from '../utils.js'
+import BaseRouter from "./Router.js";
 
 
-const router = Router();
+export default class SessionRouter extends BaseRouter {
+    init() {
+        this.post('/register', ["NO_AUTH"], passportCall('register', { strategyType: "locals" }), async (req, res) => {
+            res.sendSuccess("Registered")
+        })//O AUTH-> solo entran los q no tienen usuario
+
+        this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), async (req, res) => {
+            const accessToken = generateToken(req.user);
+            //Envío desde una cookie:
+            res.cookie('authToken', accessToken, {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true
+            }).sendSuccess("logged in")
+        })
+
+        this.post('/restorePassword', async (req, res) => {
+            const { email, password } = req.body;
+            //¿El usuario sí existe?
+            const user = await userModel.findOne({ email })
+            if (!user) return res.sendInternalError(error = "User doesn't exist")
+            const isSamePassword = await validatePassword(password, user.password);
+            if (isSamePassword) return res.sendInternalError(error = "Cannot replace password with current password")
+            //Ahora sí, actualizamos
+            const newHashedPassword = await createHash(password);
+            await userModel.updateOne({ email }, { $set: { password: newHashedPassword } });
+            res.sendSuccess("password restored");
+        })
+
+        this.get("/github", ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), (req, res) => { })
+
+        this.get('/githubcallback', ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), (req, res) => {
+
+            const accessToken = generateToken(req.user);
+
+            //Envío desde una cookie:
+            res.cookie('authToken', accessToken, {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+                sameSite: "strict"
+            }).sendSuccess("logged in con github")
+        })
+    }
+
+}
+
+//router.get('/github', passport.authenticate('github'), (req, res) => { });
 
 
-router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/registerFail' }), async (req, res) => {
-    res.send({ status: "success", message: "Registered" })
-
-})
-router.get('/registerFail', (req, res) => {
-    console.log(req.session.messages);
-    res.status(400).send({ status: "error", error: req.session.messages })
-})
-
-
-router.post('/login', passportCall('login', { redirect: '/api/sessions/loginFail' }), async (req, res) => {
-    const user = {
-        id: req.user.id,
-        name: req.user.name,
-        email: req.user.email,
-        role: req.user.role,
-    };
-    const accessToken = generateToken(user);
-    console.log(accessToken)
-    //Aquí envío el token por el body, para que el front lo guarde
-    //   res.send({status:"success",accessToken})
-
-    //Envío desde una cookie:
-    res.cookie('authToken', accessToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true
-    }).sendStatus(200);
-
-})
+// router.post('/restorePassword', async (req, res) => {
+//     const { email, password } = req.body;
+//     //¿El usuario sí existe?
+//     const user = await userModel.findOne({ email })
+//     if (!user) return res.status(400).send({ status: "error", error: "User doesn't exist" })
+//     const isSamePassword = await validatePassword(password, user.password);
+//     if (isSamePassword) return res.status(400).send({ status: "error", error: "Cannot replace password with current password" })
+//     //Ahora sí, actualizamos
+//     const newHashedPassword = await createHash(password);
+//     await userModel.updateOne({ email }, { $set: { password: newHashedPassword } });
+//     res.sendStatus(200);
+// })
+//export const router = Router();
 
 
-router.get('/jwtProfile', passportCall("jwt"), authToken, async (req, res) => {
-    //busta y chequea el token
+// router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/registerFail' }), async (req, res) => {
+//     res.send({ status: "success", message: "Registered" })
 
-    console.log(req.user);
-    res.send({ status: "success", payload: req.user })
-})
+// })
+// router.get('/registerFail', (req, res) => {
+//     console.log(req.session.messages);
+//     res.status(400).send({ status: "error", error: req.session.messages })
+// })
 
 
-router.post('/restorePassword', async (req, res) => {
-    const { email, password } = req.body;
-    //¿El usuario sí existe?
-    const user = await userModel.findOne({ email })
-    if (!user) return res.status(400).send({ status: "error", error: "User doesn't exist" })
-    const isSamePassword = await validatePassword(password, user.password);
-    if (isSamePassword) return res.status(400).send({ status: "error", error: "Cannot replace password with current password" })
-    //Ahora sí, actualizamos
-    const newHashedPassword = await createHash(password);
-    await userModel.updateOne({ email }, { $set: { password: newHashedPassword } });
-    res.sendStatus(200);
-})
+// router.post('/login', passportCall('login', { redirect: '/api/sessions/loginFail' }), async (req, res) => {
+//     const user = {
+//         id: req.user.id,
+//         name: req.user.name,
+//         email: req.user.email,
+//         role: req.user.role,
+//     };
+//     const accessToken = generateToken(user);
+//     console.log(accessToken)
+
+//     //Envío desde una cookie:
+//     res.cookie('authToken', accessToken, {
+//         maxAge: 1000 * 60 * 60 * 24,
+//         httpOnly: true
+//     }).sendStatus(200);
+
+// })
+
+
+// router.get('/jwtProfile', passportCall("jwt"), authToken, async (req, res) => {
+//     //busta y chequea el token
+
+//     console.log(req.user);
+//     res.send({ status: "success", payload: req.user })
+// })
+
+
+
 
 
 
 //github:
-router.get('/github', passport.authenticate('github'), (req, res) => { });
+//router.get('/github', passport.authenticate('github'), (req, res) => { });
 
-router.get('/githubcallback', passport.authenticate('github'), (req, res) => {
-    const user = {
-        id: req.user.id,
-        name: req.user.name,
-        email: req.user.email,
-        role: req.user.role,
-    };
-    const accessToken = generateToken(user);
-    //Aquí envío el token por el body, para que el front lo guarde
-    //   res.send({status:"success",accessToken})
+// router.get('/githubcallback', passport.authenticate('github'), (req, res) => {
+//     const user = {
+//         id: req.user.id,
+//         name: req.user.name,
+//         email: req.user.email,
+//         role: req.user.role,
+//     };
+//     const accessToken = generateToken(user);
+//     //Aquí envío el token por el body, para que el front lo guarde
+//     //   res.send({status:"success",accessToken})
 
-    //Envío desde una cookie:
-    res.cookie('authToken', accessToken, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        sameSite: "strict"
-    }).sendStatus(200);
-    res.send({ status: "success", message: "Logueado, PERO CON GITHUB!!!!!" })
-})
+//     //Envío desde una cookie:
+//     res.cookie('authToken', accessToken, {
+//         maxAge: 1000 * 60 * 60 * 24,
+//         httpOnly: true,
+//         sameSite: "strict"
+//     }).sendStatus(200);
+//     res.send({ status: "success", message: "Logueado, PERO CON GITHUB!!!!!" })
+// })
 
 
 
 
 
 // despues corregir
-router.get('/loginFail', (req, res) => {
-    res.redirect('/login')
-})
+// router.get('/loginFail', (req, res) => {
+//     res.redirect('/login')
+// })
 
 
 
@@ -160,4 +205,3 @@ router.get('/loginFail', (req, res) => {
 
 
 
-export default router;

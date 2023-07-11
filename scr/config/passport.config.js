@@ -1,10 +1,12 @@
 import passport from 'passport';
 import local from 'passport-local';
 import userModel from '../dao/mongo/models/users.js';
-import { createHash, validatePassword } from '../utils.js';
+import { cookieExtractor } from '../utils.js';
+import { createHash, validatePassword } from '../services/auth.js';
 import GithubStrategy from 'passport-github2';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { cookieExtractor } from '../utils.js';
+import UsersManager from '../dao/mongo/Managers/users.js';
+import { userService } from '../services/index.js';
 
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
@@ -16,9 +18,9 @@ const initializePassportStrategies = () => {
             { passReqToCallback: true, usernameField: 'email' },
             async (req, email, password, done) => {
                 try {
-                    const { first_name, last_name } = req.body;
+                    const { first_name, last_name, role } = req.body;
                     // el usuario ya existe?
-                    const exists = await userModel.findOne({ email });
+                    const exists = await userService.getUserBy({ email });
                     if (exists)
                         return done(null, false, { message: 'El usuario ya existe' });
                     //no existe
@@ -28,9 +30,10 @@ const initializePassportStrategies = () => {
                         first_name,
                         last_name,
                         email,
+                        role,
                         password: hashedPassword,
                     };
-                    const result = await userModel.create(user);
+                    const result = await userService.createUser(user);
                     //Si todo salió bien, Ahí es cuando done debe finalizar bien.
                     done(null, result);
                 } catch (error) {
@@ -44,37 +47,40 @@ const initializePassportStrategies = () => {
         new LocalStrategy(
             { usernameField: 'email' },
             async (email, password, done) => {
-
-                if (email === "adminCoder@coder.com" && password === "123") {
-                    const user = {
-                        id: 0,
-                        name: `Admin`,
-                        email: "mail",
-                        role: 'admin',
+                let resultUser;
+                try {
+                    if (email === "admin@admin.com" && password === "123") {
+                        //Acaba de entrar como SUPER ADMIN
+                        resultUser = {
+                            name: "Admin",
+                            id: 0,
+                            email: "admin@mail",
+                            role: 'superadmin'
+                        }
+                        return done(null, resultUser);
                     }
-                    return done(null, user);
+                    //buscar al usuario
+                    const user = await userService.getUserBy({ email });
+                    if (!user) return done(null, false, { message: 'Credenciales incorrectas' });
+                    //Número 2!!!! si sí existe el usuario, verificar password.
+
+                    const valid = await validatePassword(password, user.password)
+                    if (!valid) {
+                        return done(null, false, { message: 'Contraseña inválida' });
+                    }
+
+                    resultUser = {
+                        id: user._id,
+                        name: `${user.first_name} ${user.last_name}`,
+                        email: user.email,
+                        role: user.role,
+                    }
+
+                    return done(null, resultUser);
+
+                } catch (error) {
+                    return done(error)
                 }
-                let user;
-                //buscar al usuario
-                user = await userModel.findOne({ email });
-                if (!user) return done(null, false, { message: 'Credenciales incorrectas' });
-
-
-                //Número 2!!!! si sí existe el usuario, verificar password.
-
-                const valid = await validatePassword(password, user.password)
-                if (!valid) {
-                    return done(null, false, { message: 'Contraseña inválida' });
-                }
-
-                user = {
-                    id: user._id,
-                    name: `${user.first_name} ${user.last_name}`,
-                    email: user.email,
-                    role: user.role,
-                }
-
-                return done(null, user);
             }
 
         ))
@@ -90,7 +96,7 @@ const initializePassportStrategies = () => {
                     console.log(profile);
                     //Tomo los datos que me sirvan.
                     const { name, email } = profile._json;
-                    const user = await userModel.findOne({ email });
+                    const user = await userService.getUserBy({ email });
                     //DEBO GESTIONAR AMBAS LÓGICAS AQUÍ, OMG!!!
                     if (!user) {
                         //No existe? lo creo entonces.
@@ -99,7 +105,7 @@ const initializePassportStrategies = () => {
                             email,
                             password: ''
                         }
-                        const result = await userModel.create(newUser);
+                        const result = await userService.createUser(newUser);
                         done(null, result);
                     }
                     //Si el usuario ya existía, Qué mejor!!! 
@@ -114,8 +120,13 @@ const initializePassportStrategies = () => {
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
         secretOrKey: 'jwtSecret',
     }, async (payload, done) => {
-        console.log("first")
-        return done(null, payload);
+        try {
+            console.log(payload)
+            return done(null, payload);
+        } catch (error) {
+            return done(error)
+        }
+
     }))
 
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import ProductManager from "../../Managers/ProductManager.js";
-
+import { productService } from "../dao/mongo/Managers/index.js";
 
 const productmanager = new ProductManager
 
@@ -10,7 +10,7 @@ const router = Router()
 router.get('/', async (req, res) => {
     try {
         const { page = 1 } = req.query;
-        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productsService.paginate({}, { page, limit: 10, lean: true });
+        const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productService.paginate({}, { page, limit: 10, lean: true });
 
         const produ = docs
 
@@ -48,8 +48,8 @@ router.get('/:pid', async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const product = req.body
-        const result = await productmanager.addProducts(product)
-        const everyProd = await productmanager.getProducts()
+        const result = await productService.addProducts(product)
+        const everyProd = await productService.getProducts()
         if (result.status === 'error') return res.status(400).send({ result }); else {
             req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
             return res.status(200).send({ result });
@@ -66,7 +66,7 @@ router.put("/:pid", async (req, res) => {
     try {
         const updateProduct = req.body
         const id = Number(Object.values(req.params))
-        const result = await productmanager.updateProduct(id, updateProduct)
+        const result = await productService.updateProduct(id, updateProduct)
 
         if (result.status === 'error') return res.status(400).send({ result });
 
@@ -79,8 +79,8 @@ router.put("/:pid", async (req, res) => {
 router.delete("/:pid", async (req, res) => {
     try {
         const id = Number(Object.values(req.params))
-        const result = await productmanager.deleteProduct(id)
-        const everyProd = await productmanager.getProducts()
+        const result = await productService.deleteProduct(id)
+        const everyProd = await productService.getProducts()
 
         if (result.status === 'error') return res.status(400).send({ result });
         req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware

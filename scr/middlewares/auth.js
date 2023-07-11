@@ -1,10 +1,13 @@
-import { passportCall } from "../utils.js";
+import { passportCall } from "../services/auth.js";
 
 export const privacy = (privacyType) => {
-    return passportCall("jwt"), (req, res, next) => {
+
+    return passportCall("jwt", { strategyType: "jwt" }), (req, res, next) => {
         const user = req.user;
+        console.log(req.user)
         switch (privacyType) {
             case "PRIVATE":
+                console.log(user)
                 //Esta validación es para dejar pasar a los que se hayan logueado.
                 if (user) next();
                 else {
@@ -13,7 +16,10 @@ export const privacy = (privacyType) => {
                 }
                 break;
             case "NO_AUTHENTICATED":
-                if (!user) next()
+                if (!user) {
+                    console.log("ok")
+                    next()
+                }
                 else res.redirect('/profile')
         }
     };

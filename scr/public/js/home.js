@@ -1,5 +1,7 @@
+
 // const jwt = localStorage.getItem('accessToken');//traigo el token que esta en el front
 // if (!jwt) window.location.replace('/login');
+
 
 // fetch('/api/sessions/jwtProfile', {
 //     method: 'GET',
@@ -20,11 +22,10 @@
 const logoutButton = document.getElementById('logout');
 
 function logout() {
-    // Elimina el token de acceso del almacenamiento local
-    localStorage.removeItem('accessToken');
-
+    document.clearCookie('authToken');
+    console.log("eliminar")
     // Redirige a la página de inicio de sesión o a la página deseada
-    window.location.href = 'login'; // Reemplaza 'login.html' con la página que corresponda
+    //window.location.href = 'login'; // Reemplaza 'login.html' con la página que corresponda
 }
 
 

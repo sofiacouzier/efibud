@@ -1,6 +1,7 @@
 import express from "express";
 import session from 'express-session';
 import handlebars from "express-handlebars";
+import cookieParser from "cookie-parser";
 import MongoStore from 'connect-mongo';
 import { Server } from "socket.io";
 import __dirname from "./utils.js";
@@ -12,7 +13,8 @@ import ProductManager from "./dao/fileSystem/Managers/ProductManager.js"
 //import cartrouter from "./routes/cart.js";
 import viewsRouter from "./routes/views.router.js";
 import registerChatHandler from "./listeners/chatHandler.js";
-import sessionRouter from './routes/session.router.js';
+import SessionRouter from "./routes/session.router.js";
+//import { router } from "./routes/session.router.js";
 import passport from 'passport';
 import initializePassportStrategies from "./config/passport.config.js";
 
@@ -30,6 +32,9 @@ const io = new Server(server)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`))
+app.use(cookieParser())
+
+const sessionsRouter = new SessionRouter();
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`);
@@ -63,7 +68,8 @@ app.use('/api/cart', CartRouter)
 
 app.use('/', viewsRouter);
 
-app.use('/api/sessions', sessionRouter);
+//app.use('/api/sessions', router);
+app.use('/api/sessions', sessionsRouter.getRouter());
 
 
 io.on('connection', async socket => {
