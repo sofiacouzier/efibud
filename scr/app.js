@@ -26,7 +26,7 @@ const app = express()
 const PORT = config.app.PORT
 const server = app.listen(PORT, () => console.log("Listening on 8080"))
 
-const connection = mongoose.connect("mongodb+srv://sofiacouzier:123@cluster0.crz5vth.mongodb.net/?retryWrites=true&w=majority")
+const connection = mongoose.connect(config.mongo.URL)
 const io = new Server(server)
 
 app.use(express.json());
