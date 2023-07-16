@@ -17,13 +17,13 @@ import SessionRouter from "./routes/session.router.js";
 //import { router } from "./routes/session.router.js";
 import passport from 'passport';
 import initializePassportStrategies from "./config/passport.config.js";
-
+import config from "./config.js";
 
 
 const productmanager = new ProductManager
 
 const app = express()
-const PORT = process.env.PORT || 8080
+const PORT = config.app.PORT
 const server = app.listen(PORT, () => console.log("Listening on 8080"))
 
 const connection = mongoose.connect("mongodb+srv://sofiacouzier:123@cluster0.crz5vth.mongodb.net/?retryWrites=true&w=majority")

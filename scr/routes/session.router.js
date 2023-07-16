@@ -4,7 +4,7 @@ import userModel from "../dao/mongo/models/users.js";
 import { passportCall, createHash, validatePassword, generateToken } from "../services/auth.js";
 import { authToken } from '../middlewares/jwtAuth.js'
 import BaseRouter from "./Router.js";
-
+import sessionController from "../controllers/session.controller.js";
 
 export default class SessionRouter extends BaseRouter {
     init() {
@@ -12,41 +12,46 @@ export default class SessionRouter extends BaseRouter {
             res.sendSuccess("Registered")
         })//O AUTH-> solo entran los q no tienen usuario
 
-        this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), async (req, res) => {
-            const accessToken = generateToken(req.user);
-            //Envío desde una cookie:
-            res.cookie('authToken', accessToken, {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true
-            }).sendSuccess("logged in")
-        })
 
-        this.post('/restorePassword', async (req, res) => {
-            const { email, password } = req.body;
-            //¿El usuario sí existe?
-            const user = await userModel.findOne({ email })
-            if (!user) return res.sendInternalError(error = "User doesn't exist")
-            const isSamePassword = await validatePassword(password, user.password);
-            if (isSamePassword) return res.sendInternalError(error = "Cannot replace password with current password")
-            //Ahora sí, actualizamos
-            const newHashedPassword = await createHash(password);
-            await userModel.updateOne({ email }, { $set: { password: newHashedPassword } });
-            res.sendSuccess("password restored");
-        })
+
+        this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), sessionController.login)
+        // this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), async (req, res) => {
+        //     const accessToken = generateToken(req.user);
+        //     //Envío desde una cookie:
+        //     res.cookie('authToken', accessToken, {
+        //         maxAge: 1000 * 60 * 60 * 24,
+        //         httpOnly: true
+        //     }).sendSuccess("logged in")
+        // })
+
+        this.post('/restorePassword', sessionController.restorePassword)
+        // this.post('/restorePassword', async (req, res) => {
+        //     const { email, password } = req.body;
+        //     //¿El usuario sí existe?
+        //     const user = await userModel.findOne({ email })
+        //     if (!user) return res.sendInternalError(error = "User doesn't exist")
+        //     const isSamePassword = await validatePassword(password, user.password);
+        //     if (isSamePassword) return res.sendInternalError(error = "Cannot replace password with current password")
+        //     //Ahora sí, actualizamos
+        //     const newHashedPassword = await createHash(password);
+        //     await userModel.updateOne({ email }, { $set: { password: newHashedPassword } });
+        //     res.sendSuccess("password restored");
+        // })
 
         this.get("/github", ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), (req, res) => { })
 
-        this.get('/githubcallback', ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), (req, res) => {
 
-            const accessToken = generateToken(req.user);
+        this.get('/githubcallback', ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), sessionController.login)
+        // this.get('/githubcallback', ["NO_AUTH"], passportCall("github", { strategyType: "jwt" }), (req, res) => {
+        //     const accessToken = generateToken(req.user);
+        //     //Envío desde una cookie:
+        //     res.cookie('authToken', accessToken, {
+        //         maxAge: 1000 * 60 * 60 * 24,
+        //         httpOnly: true,
+        //         sameSite: "strict"
+        //     }).sendSuccess("logged in con github")
+        // })
 
-            //Envío desde una cookie:
-            res.cookie('authToken', accessToken, {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true,
-                sameSite: "strict"
-            }).sendSuccess("logged in con github")
-        })
     }
 
 }

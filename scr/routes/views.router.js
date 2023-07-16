@@ -7,45 +7,53 @@ import cartModel from "../dao/mongo/models/cart.js"
 import { authRoles, privacy } from "../middlewares/auth.js";
 import { passportCall } from "../services/auth.js";
 import { productService } from "../services/index.js";
+import cartController from "../controllers/cart.controller.js";
+import productController from "../controllers/product.controller.js";
 //const pm = new ProductManager
+
 
 const router = Router();
 //const productsService = new ProductsManager();
 //const cartsService = new CartsManager()
-router.get('/', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
-    console.log(req.user)
-    const { sort = 1 } = req.query
-    const { lim = 10 } = Number(Object.values(req.body))
-    const { page = 1 } = req.query;
 
-    const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productModel.paginate({}, { page, limit: lim, lean: true, sort: { price: sort } });
 
-    const produ = docs
-    res.render('home', {
-        produ,
-        hasPrevPage, hasNextPage, prevPage, nextPage,
-        page: rest.page,
-        css: 'home',
-        user: req.user
-    })
+router.get('/', passportCall("jwt", { strategyType: "jwt" }), productController.showProducts)
 
-})
+// router.get('/', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+//     console.log(req.user)
+//     const { sort = 1 } = req.query
+//     const { lim = 10 } = Number(Object.values(req.body))
+//     const { page = 1 } = req.query;
+
+//     const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productModel.paginate({}, { page, limit: lim, lean: true, sort: { price: sort } });
+
+//     const produ = docs
+//     res.render('home', {
+//         produ,
+//         hasPrevPage, hasNextPage, prevPage, nextPage,
+//         page: rest.page,
+//         css: 'home',
+//         user: req.user
+//     })
+
+// })
+
 
 router.get('/chat', async (req, res) => {
     res.render('chat')
 })
+//capas?
 
-router.get('/carts/:cid', async (req, res) => {
-    const { cid } = req.params
-    const cart = await cartModel.findOne({ _id: cid }).lean().populate('products.product');
+router.get('/carts/:cid', () => {
+    cartController.getCartByID.populate('products.product');
 
     const docs = cart.products
     console.log(docs)
     res.render('cart', {
         docs
     })
-
 })
+
 
 
 
