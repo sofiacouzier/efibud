@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ProductService from "../services/product.service.js";
+import ProductService from "../services/repositories/product.service.js";
 //import ProductsManager from "../dao/mongo/Managers/products.js";
 import productController from "../controllers/product.controller.js";
 

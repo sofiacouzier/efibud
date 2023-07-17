@@ -1,13 +1,11 @@
 import passport from 'passport';
 import local from 'passport-local';
-import userModel from '../dao/mongo/models/users.js';
 import { cookieExtractor } from '../utils.js';
 import { createHash, validatePassword } from '../services/auth.js';
 import GithubStrategy from 'passport-github2';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import UsersManager from '../dao/mongo/Managers/users.js';
 import { userService } from '../services/index.js';
-
+import TokenDTO from '../dto/user/TokenDto.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
 
@@ -27,8 +25,7 @@ const initializePassportStrategies = () => {
                     const hashedPassword = await createHash(password);
                     //Número 3! Construimos el usuario que voy a registrar
                     const user = {
-                        first_name,
-                        last_name,
+                        name: `${first_name} ${last_name}`,
                         email,
                         role,
                         password: hashedPassword,
@@ -68,13 +65,13 @@ const initializePassportStrategies = () => {
                     if (!valid) {
                         return done(null, false, { message: 'Contraseña inválida' });
                     }
-
-                    resultUser = {
-                        id: user._id,
-                        name: `${user.first_name} ${user.last_name}`,
-                        email: user.email,
-                        role: user.role,
-                    }
+                    resultUser = TokenDTO(user)
+                    // resultUser = {
+                    //     id: user._id,
+                    //     name: `${user.first_name} ${user.last_name}`,
+                    //     email: user.email,
+                    //     role: user.role,
+                    // }
 
                     return done(null, resultUser);
 

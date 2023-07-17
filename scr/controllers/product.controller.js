@@ -1,6 +1,6 @@
 
 import productModel from "../dao/mongo/models/product.js";
-import ProductService from "../services/product.service.js";
+import ProductService from "../services/repositories/product.service.js";
 
 const showProducts = async (req, res) => {
     try {
@@ -91,6 +91,7 @@ const deleteProduct = async (req, res) => {
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock } = req.body;
     if (!title || !description || !price || !thumbnail || !code || !stock) return res.status(400).send({ status: "error", error: "incomplete values" });
+
     const p = {
         title,
         description,

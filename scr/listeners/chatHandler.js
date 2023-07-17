@@ -1,5 +1,4 @@
-import MessageManager from "../dao/mongo/Managers/message.js";
-//import { messageService } from "../dao/mongo/Managers/index.js";
+
 import { messageService } from "../services/index.js";
 // const messagesServices = new MessageManager(); lo estoy importando directo del index
 
