@@ -1,6 +1,5 @@
+
 import { cartService } from "../services/index.js";
-
-
 
 const getCartByID = async (req, res) => {
     let id = Number(Object.values(req.params))

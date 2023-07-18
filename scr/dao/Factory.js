@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import config from '../config/config.js';
+import config from '../config.js';
 
 //A partir de esa variable, definirá qué DAO tomar.
 export default class PersistenceFactory {
