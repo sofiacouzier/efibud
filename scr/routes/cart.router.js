@@ -1,45 +1,30 @@
 import { Router } from "express";
-//import { cartService } from "../dao/mongo/Managers/index.js";
 import cartController from "../controllers/cart.controller.js";
-//import ProductsManager from "../dao/mongo/Managers/products.js";
-//import CartsManager from "../dao/mongo/Managers/carts.js";
-
+import { cartService } from "../services/index.js";
 const router = Router();
 
-//const cartsService = new CartsManager();
 
 //CAPAS
 
 
 router.post('/', cartController.createCart)
-// router.post('/', async (req, res) => {
-//     const c = {
-//         products: []
-//     };
-//     const result = await cartService.createCart(c);
-//     res.sendStatus(201)
-// })
+
 
 router.get('/', cartController.getCart);
 
-// router.get('/', async (req, res) => {
-//     const cart = await cartService.getCart();
-//     res.send({ status: 'success', payload: cart })
-// })
 
 
-router.post('/:cid/product/:pid', cartController.addProd)
-// router.post('/:cid/product/:pid', async (req, res) => {
-//     const { cid, pid } = req.params;
-//     const { quantity } = req.body;
-//     try {
-//         const result = await cartService.addProductsToCart(cid, pid, quantity);
-//         res.sendStatus(201)
-//     } catch (error) {
-//         console.log(error)
-//     }
+router.post('/:cid/product/:pid', async (req, res) => {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    try {
+        const result = await cartService.addProductsToCart(cid, pid, quantity);
+        res.sendStatus(201)
+    } catch (error) {
+        console.log(error)
+    }
 
-// })
+})
 
 router.get('/:cid', cartController.getCartByID)
 // router.get('/:cid', async (req, res) => {

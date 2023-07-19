@@ -12,8 +12,7 @@ form.addEventListener('submit', async (event) => {
             'Content-Type': 'application/json',
         },
     });
-    const responseData = await response.json();
-    if (responseData.status === 'success') {
+    if (response.status === 200) {
         //redirijo al login
         //muestro modal
         window.location.replace('/login');

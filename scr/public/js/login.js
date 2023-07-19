@@ -15,9 +15,9 @@ form.addEventListener('submit', async (event) => {
         },
     });
 
-    console.log(response)
-
-    window.location.replace("/login")
-
+    if (response.status === 200) {
+        //redirijo al login
+        //muestro modal
+        window.location.replace('/');
+    }
 });
-

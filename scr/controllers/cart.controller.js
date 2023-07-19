@@ -6,6 +6,7 @@ const getCartByID = async (req, res) => {
     //console.log(id)
     const cart = await cartService.getCartByID(id)
     // console.log(prod)
+
     res.send(cart.products)
 };
 
@@ -34,7 +35,7 @@ const addProd = async (req, res) => {
     let cid = Number(Object.values(req.params.cid))
     let pid = Number(Object.values(req.params.pid))
     let quantity = Number(Object.values(req.body)) || 1
-    console.log(quantity)
+    //console.log(quantity)
     const newCart = await cartService.addProductsToCart(cid, pid, quantity)
     //console.log(newCart)
     return res.status(200).send({ newCart });

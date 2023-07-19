@@ -35,7 +35,6 @@ export default class CartsManager {
                 const newQ = Number(proadded.quantity) + Number(quantity)
                 proadded.quantity = newQ
                 console.log(proadded.quantity)
-                console.log(cart)
                 return cartModel.updateOne({ _id: cid }, cart)
             } else {
                 console.log("no esta en el carrito")

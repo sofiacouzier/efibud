@@ -4,7 +4,7 @@ import { cookieExtractor } from '../utils.js';
 import { createHash, validatePassword } from '../services/auth.js';
 import GithubStrategy from 'passport-github2';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { userService } from '../services/index.js';
+import { cartService, userService } from '../services/index.js';
 import TokenDTO from '../dto/user/TokenDto.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
@@ -24,16 +24,23 @@ const initializePassportStrategies = () => {
                     //no existe
                     const hashedPassword = await createHash(password);
                     //Número 3! Construimos el usuario que voy a registrar
+                    const c = {
+                        products: []
+                    };
+                    const carts = await cartService.createCart(c)
+
                     const user = {
-                        name: `${first_name} ${last_name}`,
+                        first_name,
+                        last_name,
                         email,
                         role,
+                        cart: carts.id,
                         password: hashedPassword,
                     };
+
                     const result = await userService.createUser(user);
                     //Si todo salió bien, Ahí es cuando done debe finalizar bien.
-                    window.location.replace("/login")
-                    done(null, result);
+                    return done(null, result)
                 } catch (error) {
                     done(error);
                 }
@@ -59,6 +66,7 @@ const initializePassportStrategies = () => {
                     }
                     //buscar al usuario
                     const user = await userService.getUserBy({ email });
+
                     if (!user) return done(null, false, { message: 'Credenciales incorrectas' });
                     //Número 2!!!! si sí existe el usuario, verificar password.
 
@@ -69,6 +77,7 @@ const initializePassportStrategies = () => {
                     resultUser = new TokenDTO(user)
 
                     return done(null, resultUser);
+
 
                 } catch (error) {
                     return done(error)
@@ -113,7 +122,7 @@ const initializePassportStrategies = () => {
         secretOrKey: 'jwtSecret',
     }, async (payload, done) => {
         try {
-            console.log(payload)
+
             return done(null, payload);
         } catch (error) {
             return done(error)

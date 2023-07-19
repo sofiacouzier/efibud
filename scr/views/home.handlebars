@@ -4,7 +4,6 @@
 <h3 id="email">{{user.user.email}}</h3>
 
 <ul id="productos">
-
     {{#each produ}}
     <div class="product">
         <img class="img" src={{this.thumbnail}}>
@@ -13,9 +12,7 @@
         <h5 class="code">code:{{this.code}}</h5>
         <h4 class="desc">precio:{{this.price}}</h4>
         <br>
-        {{#if user}}
         <div><button type="button" id="agregar">agregar al carrito</button></div>
-        {{/if}}
         <br>
     </div>
     {{/each}}

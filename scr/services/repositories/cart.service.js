@@ -15,7 +15,7 @@ export default class CartService {
     deleteCart = (cart) => {
         return this.dao.deleteCart(cart);
     }
-    addProducts = (cid, pid, quantity) => {
+    addProductsToCart = (cid, pid, quantity) => {
         return this.dao.addProductsToCart(cid, pid, quantity);
     }
     updateQuantity = (cid, pid, quantity) => {

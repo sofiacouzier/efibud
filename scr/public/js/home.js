@@ -18,16 +18,18 @@
 //         email.innerHTML = result.payload.email
 //     });
 
-
+//NECESITA ARREGLO
 const logoutButton = document.getElementById('logout');
+const agregarCarrito = document.getElementById('agregar')
 
 function logout() {
     document.clearCookie('authToken');
-    console.log("eliminar")
+    console.log("sesion eliminada")
     // Redirige a la página de inicio de sesión o a la página deseada
-    //window.location.href = 'login'; // Reemplaza 'login.html' con la página que corresponda
+    window.location.href('/login')
 }
 
-
+//arreglar
 logoutButton.addEventListener('click', logout);
 
+// probar: agregarCarrito.addEventListener('submit',)

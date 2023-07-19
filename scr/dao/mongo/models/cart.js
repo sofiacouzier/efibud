@@ -19,11 +19,14 @@ const schema = new mongoose.Schema({
         ],
         default: []
     },
+    totalPrice: {
+        type: Number,
+        default: 0
+    },
     status: {
         type: String,
         default: "active"
     }
-
 }, { timestamps: { createdAt: "craeted_at", updatedAt: "updated_at" } })
 
 schema.pre('find', function () {
