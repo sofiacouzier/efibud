@@ -1,5 +1,6 @@
 import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
+import ticketController from "../controllers/ticket.controller.js";
 import { cartService } from "../services/index.js";
 const router = Router();
 
@@ -60,5 +61,10 @@ router.put('/:cid/products/:pid', cartController.updateQ)
 //     const cart = await cartService.updateQuantity(cid, pid, quantity);
 //     return res.send({ status: 'success' })
 // })
+
+
+
+
+router.post('/:cid/purchase', ticketController.createTicket())
 
 export default router

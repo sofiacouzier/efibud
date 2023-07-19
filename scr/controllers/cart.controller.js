@@ -4,11 +4,21 @@ import { cartService } from "../services/index.js";
 const getCartByID = async (req, res) => {
     let id = Number(Object.values(req.params))
     //console.log(id)
-    const cart = await cartService.getCartByID(id)
+    const cart = await cartService.getCartByID({ _id: id }).lean()
     // console.log(prod)
 
     res.send(cart.products)
 };
+
+const showCart = async (req, res) => {
+
+    const { cid } = req.params
+    const cart = await cartModel.findOne({ _id: cid }).lean().populate('products.product');
+    const prodInCart = cart.products
+    const docs = prodInCart
+    console.log(docs)
+    res.send(docs)
+}
 
 const getCart = async (req, res) => {
     const cart = await cartService.getCart();
@@ -69,5 +79,6 @@ export default {
     addProd,
     deleteCart,
     deleteProd,
-    updateQ
+    updateQ,
+    showCart
 };

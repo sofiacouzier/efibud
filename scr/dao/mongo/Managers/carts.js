@@ -1,9 +1,7 @@
 import mongodb, { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 import cartModel from "../models/cart.js";
-import productModel from "../models/product.js";
 import ProductsManager from "./products.js";
-import { Types } from "mongoose";
 
 const productsService = new ProductsManager();
 

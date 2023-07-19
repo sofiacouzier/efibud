@@ -1,34 +1,29 @@
 import mongoose from "mongoose";
 
-
-const collection = 'carts';
+const collection = 'ticket';
 
 const schema = new mongoose.Schema({
     products: {
         type: [{
             product: {
                 type: mongoose.SchemaTypes.ObjectId,
-                ref: 'products'
+                ref: 'carts'
 
-            },
-            quantity: {
-                type: String,
-                default: 1
             }
         }
         ],
         default: []
     },
-    status: {
-        type: String,
-        default: "active"
-    }
+    amount: Number,
+    purchaser: String,
+    code: String,
+    purchase_datetime: Date.now()
 }, { timestamps: { createdAt: "craeted_at", updatedAt: "updated_at" } })
 
 schema.pre('find', function () {
     this.populate('products.product')
 })
 
-const cartModel = mongoose.model(collection, schema);
+const ticketModel = mongoose.model(collection, schema);
 
-export default cartModel;
+export default ticketModel;
