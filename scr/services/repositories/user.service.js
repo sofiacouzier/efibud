@@ -6,7 +6,7 @@ export default class UserService {
     getAllUsers = () => {
         return this.dao.getUsers();
     }
-    getSingleUser = (params) => {
+    getUserBy = (params) => {
         return this.dao.getUserBy(params)
     }
     createUser = (user) => {

@@ -32,6 +32,7 @@ const initializePassportStrategies = () => {
                     };
                     const result = await userService.createUser(user);
                     //Si todo salió bien, Ahí es cuando done debe finalizar bien.
+                    window.location.replace("/login")
                     done(null, result);
                 } catch (error) {
                     done(error);
@@ -65,13 +66,7 @@ const initializePassportStrategies = () => {
                     if (!valid) {
                         return done(null, false, { message: 'Contraseña inválida' });
                     }
-                    resultUser = TokenDTO(user)
-                    // resultUser = {
-                    //     id: user._id,
-                    //     name: `${user.first_name} ${user.last_name}`,
-                    //     email: user.email,
-                    //     role: user.role,
-                    // }
+                    resultUser = new TokenDTO(user)
 
                     return done(null, resultUser);
 

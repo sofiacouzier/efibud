@@ -9,7 +9,7 @@ import PersistenceFactory from "../dao/Factory.js";
 
 const userDao = await PersistenceFactory.getPersistence()
 
-export const userService = new UserService(userDao)
+export const userService = new UserService(new UsersManager())
 
 export const productService = new ProductService(new ProductsManager())
 

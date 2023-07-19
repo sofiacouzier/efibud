@@ -1,12 +1,6 @@
 import { Router } from "express";
-//import ProductManager from "../dao/fileSystem/Managers/ProductManager.js";
-//import ProductsManager from "../dao/mongo/Managers/products.js";
-import productModel from "../dao/mongo/models/product.js";
-import cartModel from "../dao/mongo/models/cart.js"
-//import CartsManager from "../dao/mongo/Managers/carts.js";
 import { authRoles, privacy } from "../middlewares/auth.js";
 import { passportCall } from "../services/auth.js";
-import { productService } from "../services/index.js";
 import cartController from "../controllers/cart.controller.js";
 import productController from "../controllers/product.controller.js";
 //const pm = new ProductManager
