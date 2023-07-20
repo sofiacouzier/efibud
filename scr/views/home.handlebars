@@ -4,7 +4,7 @@
 <h3 id="email">{{user.user.email}}</h3>
 
 {{#if user}}
-<a href="'/api/carts/:cid/purchase"><button>carrito</button></a>
+<a href="/cart"><button>carrito</button></a>
 {{/if}}
 <ul id="productos">
     {{#each produ}}
@@ -28,7 +28,9 @@
     <a href="/?page={{nextPage}}"><button>Siguiente</button></a>
     {{/if}}
 </ul>
-<button id="logout"> cerrar sesion</button>
+<a><button id="logout"> cerrar sesion</button>
+</a>
+
 
 <script src="/scr/public/js/home.js"></script>
 <script src='/js/home.js'></script>

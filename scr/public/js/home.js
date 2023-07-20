@@ -20,16 +20,22 @@
 
 //NECESITA ARREGLO
 const logoutButton = document.getElementById('logout');
+logoutButton.addEventListener('click', async () => {
+    try {
+        const response = await fetch('/logout', {
+            method: 'DELETE',
+        });
+        if (response.status == 200) {
+            window.location.replace('/login');
+        }
+    } catch (error) {
+        console.error('Error al cerrar sesión:');
+    }
+});
 const agregarCarrito = document.getElementById('agregar')
 
-function logout() {
-    document.clearCookie('authToken');
-    console.log("sesion eliminada")
-    // Redirige a la página de inicio de sesión o a la página deseada
-    window.location.href('/login')
-}
 
 //arreglar
-logoutButton.addEventListener('click', logout);
+//logoutButton.addEventListener('click', window.location.redirect('/login'));
 
 // probar: agregarCarrito.addEventListener('submit',)

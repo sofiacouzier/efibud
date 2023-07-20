@@ -18,7 +18,7 @@ router.get('/chat', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVA
 //capas?
 
 
-router.get('/carts/:cid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
+router.get('/cart', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
 
 
 
@@ -63,6 +63,10 @@ router.get('/jwtProfile', passportCall('jwt', { redirect: '/login' }), (req, res
 
 })
 
+router.delete('/logout', async (req, res) => {
+    console.log("eliminando sesion")
+    res.clearCookie('authToken').send({ status: 200 });
+})
 
 router.get('/jwtLogin', (req, res) => {
     res.render('login')
