@@ -65,6 +65,6 @@ router.put('/:cid/products/:pid', cartController.updateQ)
 
 
 
-router.post('/:cid/purchase', ticketController.createTicket())
+// arreglar router.post('/:cid/purchase', ticketController.createTicket())
 
 export default router

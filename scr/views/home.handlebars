@@ -3,6 +3,9 @@
 <h1 id="welcome">{{user.user.name}}</h1>
 <h3 id="email">{{user.user.email}}</h3>
 
+{{#if user}}
+<a href="'/api/carts/:cid/purchase"><button>carrito</button></a>
+{{/if}}
 <ul id="productos">
     {{#each produ}}
     <div class="product">

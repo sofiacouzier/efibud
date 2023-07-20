@@ -17,7 +17,7 @@ const schema = new mongoose.Schema({
     amount: Number,
     purchaser: String,
     code: String,
-    purchase_datetime: Date.now()
+    purchase_datetime: Number
 }, { timestamps: { createdAt: "craeted_at", updatedAt: "updated_at" } })
 
 schema.pre('find', function () {
