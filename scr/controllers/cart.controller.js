@@ -1,4 +1,4 @@
-
+import cartModel from "../dao/mongo/models/cart.js";
 import { cartService } from "../services/index.js";
 
 const getCartByID = async (req, res) => {
@@ -11,13 +11,16 @@ const getCartByID = async (req, res) => {
 };
 
 const showCart = async (req, res) => {
-
-    const { cid } = req.params
-    const cart = await cartModel.findOne({ _id: cid }).lean().populate('products.product');
+    const user = req.user
+    const cid = user.user.cid
+    const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
     const prodInCart = cart.products
     const docs = prodInCart
-    console.log(docs)
-    res.send(docs)
+    //console.log(docs)
+    res.render('cart', {
+        docs,
+        css: 'home'
+    })
 }
 
 const getCart = async (req, res) => {

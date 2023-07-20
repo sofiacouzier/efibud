@@ -11,7 +11,7 @@ export default class CartsManager {
         return cartModel.find().lean();
     }
     getCartByID = (cid) => {
-        return cartModel.find({ _id: cid }).lean()
+        return cartModel.findOne({ _id: cid }).lean()
     }
     createCart = (cart) => {
         return cartModel.create(cart)

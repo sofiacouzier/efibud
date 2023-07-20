@@ -18,18 +18,8 @@ router.get('/chat', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVA
 //capas?
 
 
-router.get('/carts/:cid', async (req, res) => {
+router.get('/carts/:cid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
 
-    const { cid } = req.params
-    const cart = await cartModel.findOne({ _id: cid }).lean().populate('products.product');
-    const prodInCart = cart.products
-    const docs = prodInCart
-    console.log(docs)
-    res.render('cart', {
-        docs,
-        css: 'home'
-    })
-})
 
 
 
