@@ -13,29 +13,34 @@ logoutButton.addEventListener('click', async () => {
         console.error('Error al cerrar sesión:');
     }
 });
-const agregarCarrito = document.getElementById('agregar')
+const agregarCarrito = document.getElementById('productos')
 
 
 //arreglar
 agregarCarrito.addEventListener('click', async (event) => {
-    const prodId = event.target.dataset.id
-    console.log("contenido de prodId:", prodId)
-    console.log(typeof prodId)
-    try {
-        const response = await fetch('/api/cart/aver', {
-            method: 'POST',
-            body: prodId,
-            headers: {
-                'Content-Type': 'application/json',
-            },
 
-        })
+    console.log("algo")
+    if (event.target.classList.contains('agregar')) {
+        let prodId = event.target.dataset.id
+        console.log("contenido de prodId:", prodId)
+        console.log(typeof prodId)
 
-        console.log('Respuesta del servidor:', responseData); // Mostramos la respuesta del servidor en la consola
-    } catch (error) {
-        console.error(error);
+        const obj = { prodId };
+        //prodId.forEach((value, key) => (obj[key] = value));
+        try {
+            const response = await fetch('/api/cart/agregar', {
+                method: 'POST',
+                body: JSON.stringify(obj),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+
+            })
+            // Mostramos la respuesta del servidor en la consola
+        } catch (error) {
+            console.error(error);
+        }
     }
-
 });
 
 // probar: agregarCarrito.addEventListener('submit',)

@@ -19,7 +19,7 @@ router.get('/', cartController.getCart);
 router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
     console.log(req.user)
     const { cid, pid } = req.params;
-    const { quantity } = req.body;
+    const quantity = 1
     try {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(201)
@@ -29,16 +29,15 @@ router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), 
 
 })
 
-router.post('/aver', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
-    console.log("llego")
+router.post('/agregar', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+    const pid = req.body.prodId
+    const cid = req.user.user.cid
+    const quantity = 1
     try {
-        console.log(req.body.prodId)
-        console.log(req.user.user.cid);
-        console.log("aver");
-        return res.status(200).json({ message: 'Success' });
+        const result = await cartService.addProductsToCart(cid, pid, quantity);
+        res.sendStatus(200)
     } catch (error) {
-        console.error('Error al analizar el JSON:', error.message);
-        return res.status(500).json({ message: 'Error en el servidor' });
+        console.log(error)
     }
 
 })

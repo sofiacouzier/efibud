@@ -32,7 +32,7 @@ export default class CartsManager {
                 console.log("el p esta en el carrito")
                 const newQ = Number(proadded.quantity) + Number(quantity)
                 proadded.quantity = newQ
-                console.log(proadded.quantity)
+                console.log("hola", proadded.quantity)
                 return cartModel.updateOne({ _id: cid }, cart)
             } else {
                 console.log("no esta en el carrito")
