@@ -1,28 +1,25 @@
 import mongoose from "mongoose";
 
-const collection = 'ticket';
+const collection = 'tickets';
 
 const schema = new mongoose.Schema({
-    products: {
-        type: [{
-            product: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: 'carts'
-
-            }
-        }
-        ],
-        default: []
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users'
     },
+    products: [],
+    code: String,
     amount: Number,
     purchaser: String,
-    code: String,
-    purchase_datetime: Number
+    purchase_datetime: {
+        type: Date,
+        default: Date.now
+    }, //  se crea un campo: purchase_datetime
+
+
 }, { timestamps: { createdAt: "craeted_at", updatedAt: "updated_at" } })
 
-schema.pre('find', function () {
-    this.populate('products.product')
-})
+
 
 const ticketModel = mongoose.model(collection, schema);
 

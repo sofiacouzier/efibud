@@ -35,7 +35,7 @@ router.get('/:pid', productController.getProductByID)
 //     return res.send({ status: 'success', payload: product })
 // })
 
-router.put('/:pid', productController.updateProduct)
+router.put('/:pid', authRoles('admin'), productController.updateProduct)
 // router.put('/:pid', async (req, res) => {
 //     const { pid } = req.params;
 //     const updateproduct = req.body;

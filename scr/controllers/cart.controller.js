@@ -44,19 +44,17 @@ const createCart = async (req, res) => {
 }
 
 const addProd = async (req, res) => {
-    console.log("llega")
-    const user = req.user
-    console.log(user)
-    const cid = user.cid
-    console.log(cid)
-    // no llega asi!!
-    let pid = Number(Object.values(req.params.pid))
-    console.log(pid)
-    let quantity = Number(Object.values(req.body)) || 1
-    //console.log(quantity)
-    const newCart = await cartService.addProductsToCart(cid, pid, quantity)
-    //console.log(newCart)
-    return res.status(200).send({ newCart });
+    const pid = req.body.prodId
+    const cid = req.user.user.cid
+    const quantity = 1
+    try {
+        const result = await cartService.addProductsToCart(cid, pid, quantity);
+        res.sendStatus(200)
+    } catch (error) {
+        console.log(error)
+    }
+
+
 }
 
 const deleteCart = async (req, res) => {

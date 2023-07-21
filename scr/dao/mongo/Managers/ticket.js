@@ -1,21 +1,25 @@
 import mongoose from "mongoose";
-import ProductsManager from "./products.js";
 import ticketModel from "../models/ticket.js";
-import cartModel from "../models/cart.js";
 
-const productsService = new ProductsManager();
 
 //lsof -i tcp:8080               
-export default class CartsManager {
+export default class TicketsManager {
 
-    getCartByID = (cid) => {
-        return ticketModel.find({ _id: cid }).lean()
+    getTicket = () => {
+        return ticketModel.find().lean()
     }
-    createCart = (ticket) => {
+    getTicketBy = (params) => {
+        return ticketModel.findOne(params).lean()
+    }
+    createTicket = (ticket) => {
         return ticketModel.create(ticket)
     }
-
-
+    updateTicket = (id, ticket) => {
+        return ticketModel.findByIdAndUpdate(id, { $set: ticket })
+    }
+    deleteTicket = (id) => {
+        return ticketModel.findByIdAndDelete(id)
+    }
 }
 
 

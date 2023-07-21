@@ -18,8 +18,6 @@ const agregarCarrito = document.getElementById('productos')
 
 //arreglar
 agregarCarrito.addEventListener('click', async (event) => {
-
-    console.log("algo")
     if (event.target.classList.contains('agregar')) {
         let prodId = event.target.dataset.id
         console.log("contenido de prodId:", prodId)
