@@ -6,6 +6,8 @@ import UserService from "./repositories/user.service.js";
 import CartService from "./repositories/cart.service.js";
 import ProductService from "./repositories/product.service.js";
 import PersistenceFactory from "../dao/Factory.js";
+import TicketRepository from "./repositories/ticket.repository.js";
+import TicketsManager from "../dao/mongo/Managers/ticket.js";
 
 const userDao = await PersistenceFactory.getPersistence()
 
@@ -16,3 +18,5 @@ export const productService = new ProductService(new ProductsManager())
 export const cartService = new CartService(new CartsManager());
 
 export const messageService = new MessageManager()
+
+export const ticketService = new TicketRepository(new TicketsManager())

@@ -1,5 +1,6 @@
 import cartModel from "../dao/mongo/models/cart.js";
 import { cartService } from "../services/index.js";
+import ProductService from "../services/repositories/product.service.js";
 
 const getCartByID = async (req, res) => {
     let id = Number(Object.values(req.params))
@@ -78,6 +79,65 @@ const updateQ = async (req, res) => {
     return res.send({ status: 'success' })
 }
 
+
+
+createTicket = async (req, res) => {
+
+    try {
+        const user = req.user
+        const { cid } = req.params
+        const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
+        //console.log(cart)
+        const prod = cart.products
+        const ticketProd = []
+        let prodLeft = []
+        let acumulador = 0
+        // console.log(prod)
+        async function update(pid, updatedProduct) {
+            const result = await ProductService.updateProduct(pid, updatedProduct)
+        }
+        prod.forEach(p => {
+            if (p.quantity <= p.product.stock) {
+                let pid = p.product._id
+                let newStock = p.product.stock - p.quantity
+                let updatedProduct = { stock: newStock }
+                //console.log(pid, newStock)
+                try {
+                    update(pid, updatedProduct)
+
+                } catch (error) {
+                    console.log(error)
+                }
+                //si la cantidad es menor o coincide con el stock, agregar el producto al ticket
+                ticketProd.push(p)
+                const price = p.quantity * p.product.price
+                acumulador = acumulador + price
+            } else {
+                prodLeft.push(p)
+                console.log(`el producto ${p.product.title} no tiene suficiente stock`)
+            }
+        })
+        //console.log(acumulador)
+        //console.log(ticketProd)
+        // Generar el código único
+        const code = shortid.generate();
+        const ticket = {
+            user: user.user._id,
+            code: code,
+            amount: acumulador,
+            purchaser: user.user.name,
+            products: ticketProd
+        }
+
+        ticketModel.create(ticket)
+
+        return res.send(prodLeft, { status: 'success' })
+    } catch (error) {
+        console.log(error)
+        return res.send({ status: 'error' })
+    }
+}
+
 export default {
     getCartByID,
     getCart,
@@ -86,5 +146,6 @@ export default {
     deleteCart,
     deleteProd,
     updateQ,
-    showCart
+    showCart,
+    createTicket
 };

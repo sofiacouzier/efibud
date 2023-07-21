@@ -90,63 +90,63 @@ router.put('/:cid/products/:pid', cartController.updateQ)
 
 router.get("/ticket")
 
+router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), cartController.createTicket)
+// router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
 
-router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+//     try {
+//         const user = req.user
+//         const { cid } = req.params
+//         const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
+//         console.log(cart)
+//         const prod = cart.products
+//         const ticketProd = []
+//         let prodLeft = []
+//         let acumulador = 0
+//         // console.log(prod)
+//         async function update(pid, updatedProduct) {
+//             const result = await productModel.findByIdAndUpdate(pid, { $set: updatedProduct })
+//         }
+//         prod.forEach(p => {
+//             if (p.quantity <= p.product.stock) {
+//                 let pid = p.product._id
+//                 let newStock = p.product.stock - p.quantity
+//                 let updatedProduct = { stock: newStock }
+//                 //console.log(pid, newStock)
+//                 try {
+//                     update(pid, updatedProduct)
 
-    try {
-        const user = req.user
-        const { cid } = req.params
-        const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
-        console.log(cart)
-        const prod = cart.products
-        const ticketProd = []
-        let prodLeft = []
-        let acumulador = 0
-        // console.log(prod)
-        async function update(pid, updatedProduct) {
-            const result = await productModel.findByIdAndUpdate(pid, { $set: updatedProduct })
-        }
-        prod.forEach(p => {
-            if (p.quantity <= p.product.stock) {
-                let pid = p.product._id
-                let newStock = p.product.stock - p.quantity
-                let updatedProduct = { stock: newStock }
-                //console.log(pid, newStock)
-                try {
-                    update(pid, updatedProduct)
+//                 } catch (error) {
+//                     console.log(error)
+//                 }
+//                 //si la cantidad es menor o coincide con el stock, agregar el producto al ticket
+//                 ticketProd.push(p)
+//                 const price = p.quantity * p.product.price
+//                 acumulador = acumulador + price
+//             } else {
+//                 prodLeft.push(p)
+//                 console.log(`el producto ${p.product.title} no tiene suficiente stock`)
+//             }
+//         })
+//         //console.log(acumulador)
+//         //console.log(ticketProd)
+//         // Generar el código único
+//         const code = shortid.generate();
+//         const ticket = {
+//             user: user.user._id,
+//             code: code,
+//             amount: acumulador,
+//             purchaser: user.user.name,
+//             products: ticketProd
+//         }
 
-                } catch (error) {
-                    console.log(error)
-                }
-                //si la cantidad es menor o coincide con el stock, agregar el producto al ticket
-                ticketProd.push(p)
-                const price = p.quantity * p.product.price
-                acumulador = acumulador + price
-            } else {
-                prodLeft.push(p)
-                console.log(`el producto ${p.product.title} no tiene suficiente stock`)
-            }
-        })
-        //console.log(acumulador)
-        //console.log(ticketProd)
-        // Generar el código único
-        const code = shortid.generate();
-        const ticket = {
-            user: user.user._id,
-            code: code,
-            amount: acumulador,
-            purchaser: user.user.name,
-            products: ticketProd
-        }
+//         ticketModel.create(ticket)
 
-        ticketModel.create(ticket)
-
-        return res.send({ status: 'success' })
-    } catch (error) {
-        console.log(error)
-        return res.send({ status: 'error' })
-    }
-})
+//         return res.send(prodLeft, { status: 'success' })
+//     } catch (error) {
+//         console.log(error)
+//         return res.send({ status: 'error' })
+//     }
+// })
 // arreglar router.post('/:cid/purchase', ticketController.createTicket())
 
 export default router
