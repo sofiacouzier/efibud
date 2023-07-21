@@ -1,5 +1,7 @@
 import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
+import { privacy } from "../middlewares/auth.js";
+import { passportCall } from "../services/auth.js";
 
 const cartrouter = Router()
 
@@ -28,8 +30,7 @@ cartrouter.post("/", cartController.createCart)
 // })
 cartrouter.get("/:cid", cartController.getCartByID)
 
-cartrouter.post("/:cid/product/:pid", cartController.addProd)
-
+cartrouter.post("/product/:pid", passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProd)
 // cartrouter.post("/:cid/product/:pid", async (req, res) => {
 //     let cid = Number(Object.values(req.params.cid))
 //     let pid = Number(Object.values(req.params.pid))

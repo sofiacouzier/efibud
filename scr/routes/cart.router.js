@@ -1,7 +1,9 @@
 import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
 import ticketController from "../controllers/ticket.controller.js";
+import { passportCall } from "../services/auth.js";
 import { cartService } from "../services/index.js";
+import { privacy } from "../middlewares/auth.js";
 const router = Router();
 
 
@@ -14,8 +16,8 @@ router.post('/', cartController.createCart)
 router.get('/', cartController.getCart);
 
 
-
-router.post('/:cid/product/:pid', async (req, res) => {
+router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+    console.log(req.user)
     const { cid, pid } = req.params;
     const { quantity } = req.body;
     try {
@@ -23,6 +25,20 @@ router.post('/:cid/product/:pid', async (req, res) => {
         res.sendStatus(201)
     } catch (error) {
         console.log(error)
+    }
+
+})
+
+router.post('/aver', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
+    console.log("llego")
+    try {
+        console.log(req.body.prodId)
+        console.log(req.user.user.cid);
+        console.log("aver");
+        return res.status(200).json({ message: 'Success' });
+    } catch (error) {
+        console.error('Error al analizar el JSON:', error.message);
+        return res.status(500).json({ message: 'Error en el servidor' });
     }
 
 })

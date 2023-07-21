@@ -76,6 +76,6 @@ io.on('connection', async socket => {
     registerChatHandler(io, socket);
     console.log("Nuevo cliente conectado");
     const p = await productmanager.getProducts()
-    console.log(p)
+    //console.log(p)
     io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })

@@ -16,7 +16,7 @@ const showCart = async (req, res) => {
     const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
     const prodInCart = cart.products
     const docs = prodInCart
-    //console.log(docs)
+    console.log(docs)
     res.render('cart', {
         docs,
         css: 'home'
@@ -44,9 +44,14 @@ const createCart = async (req, res) => {
 }
 
 const addProd = async (req, res) => {
-
-    let cid = Number(Object.values(req.params.cid))
+    console.log("llega")
+    const user = req.user
+    console.log(user)
+    const cid = user.cid
+    console.log(cid)
+    // no llega asi!!
     let pid = Number(Object.values(req.params.pid))
+    console.log(pid)
     let quantity = Number(Object.values(req.body)) || 1
     //console.log(quantity)
     const newCart = await cartService.addProductsToCart(cid, pid, quantity)

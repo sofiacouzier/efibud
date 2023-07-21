@@ -15,7 +15,7 @@ export const cookieExtractor = (req) => {
     if (req && req.cookies) {
         token = req.cookies['authToken']
     }
-    console.log(token)
+    //console.log(token)
     return token;
 }
 

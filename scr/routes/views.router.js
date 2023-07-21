@@ -21,9 +21,6 @@ router.get('/chat', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVA
 router.get('/cart', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
 
 
-
-
-
 router.get('/realtimeproducts', (req, res) => {
     res.render('realtimeproducts', {
         css: "realtimeproducts"
@@ -50,7 +47,7 @@ router.get('/restorePassword', privacy('NO_AUTHENTICATED'), (req, res) => {
 })
 
 router.get('/admin', passportCall('jwt', { redirect: '/login' }), authRoles('admin'), (req, res) => {
-    console.log(req.user);
+    //console.log(req.user);
     res.render('jwtProfile', { user: req.user })
 
 })

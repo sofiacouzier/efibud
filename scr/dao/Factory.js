@@ -5,7 +5,7 @@ import config from '../config.js';
 export default class PersistenceFactory {
     static async getPersistence() {
         let usersDAO;
-        console.log(config);
+        //console.log(config);
         switch (config.PERSISTENCE) {
             case "FS":
 

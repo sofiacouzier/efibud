@@ -1,29 +1,10 @@
 
-// const jwt = localStorage.getItem('accessToken');//traigo el token que esta en el front
-// if (!jwt) window.location.replace('/login');
-
-
-// fetch('/api/sessions/jwtProfile', {
-//     method: 'GET',
-//     headers: {
-//         authorization: `Bearer ${jwt}`,
-//     },
-// })
-//     .then((response) => response.json())
-//     .then((result) => {
-//         console.log(result);
-//         const welcome = document.getElementById('welcome');
-//         const email = document.getElementById('email');
-//         welcome.innerHTML = `Hola, ${result.payload.name}`;
-//         email.innerHTML = result.payload.email
-//     });
-
-//NECESITA ARREGLO
 const logoutButton = document.getElementById('logout');
 logoutButton.addEventListener('click', async () => {
     try {
         const response = await fetch('/logout', {
             method: 'DELETE',
+
         });
         if (response.status == 200) {
             window.location.replace('/login');
@@ -36,6 +17,25 @@ const agregarCarrito = document.getElementById('agregar')
 
 
 //arreglar
-//logoutButton.addEventListener('click', window.location.redirect('/login'));
+agregarCarrito.addEventListener('click', async (event) => {
+    const prodId = event.target.dataset.id
+    console.log("contenido de prodId:", prodId)
+    console.log(typeof prodId)
+    try {
+        const response = await fetch('/api/cart/aver', {
+            method: 'POST',
+            body: prodId,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+        })
+
+        console.log('Respuesta del servidor:', responseData); // Mostramos la respuesta del servidor en la consola
+    } catch (error) {
+        console.error(error);
+    }
+
+});
 
 // probar: agregarCarrito.addEventListener('submit',)

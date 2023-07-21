@@ -4,7 +4,7 @@ import ProductService from "../services/repositories/product.service.js";
 
 const showProducts = async (req, res) => {
     try {
-        console.log(req.user)
+        //console.log(req.user)
         const { sort = 1 } = req.query
         const { lim = 10 } = Number(Object.values(req.body))
         const { page = 1 } = req.query;

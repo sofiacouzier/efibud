@@ -34,7 +34,7 @@ export const passportCall = (strategy, options = {}) => {
                     return res.redirect(options.redirect);
                 }
             }
-            console.log(user)
+            //console.log(user)
             req.user = user;
             next();
         })(req, res, next);

@@ -94,7 +94,7 @@ const initializePassportStrategies = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    console.log(profile);
+                    //console.log(profile);
                     //Tomo los datos que me sirvan.
                     const { name, email } = profile._json;
                     const user = await userService.getUserBy({ email });
