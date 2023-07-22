@@ -98,13 +98,14 @@ createTicket = async (req, res) => {
         }
         prod.forEach(p => {
             if (p.quantity <= p.product.stock) {
+                let quantity = p.quantity - p.product.stock
                 let pid = p.product._id
                 let newStock = p.product.stock - p.quantity
                 let updatedProduct = { stock: newStock }
                 //console.log(pid, newStock)
                 try {
                     update(pid, updatedProduct)
-
+                    cartService.updateQuantity(cid, pid, quantity);
                 } catch (error) {
                     console.log(error)
                 }
@@ -130,6 +131,9 @@ createTicket = async (req, res) => {
         }
 
         ticketModel.create(ticket)
+
+
+
 
         return res.send(prodLeft, { status: 'success' })
     } catch (error) {
