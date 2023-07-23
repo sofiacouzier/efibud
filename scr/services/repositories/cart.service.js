@@ -22,6 +22,6 @@ export default class CartService {
         return this.dao.updateQuantity(cid, pid, quantity);
     }
     deleteProduct = (cid, pid) => {
-        return this.dao.deleteProduct(cid, pid, quantity);
+        return this.dao.deleteProduct(cid, pid);
     }
 }

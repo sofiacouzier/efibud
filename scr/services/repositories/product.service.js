@@ -10,7 +10,7 @@ export default class ProductService {
         return this.dao.getProducts();
     }
     getProductsBy = (params) => {
-        return this.dao.getProductsByID(params)
+        return this.dao.getProductsBy(params)
     }
     createProduct = (cart) => {
         return this.dao.createProduct(cart);

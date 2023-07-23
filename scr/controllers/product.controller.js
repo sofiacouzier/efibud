@@ -1,6 +1,6 @@
 
 import productModel from "../dao/mongo/models/product.js";
-import ProductService from "../services/repositories/product.service.js";
+import { productService } from "../services/index.js";
 
 const showProducts = async (req, res) => {
     try {
@@ -30,13 +30,15 @@ const showProducts = async (req, res) => {
 
 
 const getProducts = async (req, res) => {
-    const produ = await ProductService.getProducts();
+    const produ = await productService.getProducts();
     res.send({ status: 201, payload: produ })
 }
 
 const getProductByID = async (req, res) => {
-    let id = Number(Object.values(req.params))
-    const prod = await ProductService.getProductByID(id)
+    const { pid } = req.params
+    // console.log(id)
+    const prod = await productService.getProductsBy(pid)
+    console.log(prod)
     if (!prod) res.status(404).send({ status: "error", error: "product not found" })
     return res.send({ status: 'success', payload: prod })
 }
@@ -44,8 +46,8 @@ const getProductByID = async (req, res) => {
 const addProducts = async (req, res) => {
     try {
         const product = req.body
-        const result = await ProductService.addProducts(product)
-        const everyProd = await ProductService.getProducts()
+        const result = await productService.addProducts(product)
+        const everyProd = await productService.getProducts()
         if (result.status === 'error') return res.status(400).send({ result }); else {
             req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
             return res.status(200).send({ result });
@@ -61,7 +63,7 @@ const updateProduct = async (req, res) => {
     try {
         const updateProduct = req.body
         const id = Number(Object.values(req.params))
-        const result = await ProductService.updateProduct(id, updateProduct)
+        const result = await productService.updateProduct(id, updateProduct)
 
         if (result.status === 'error') return res.status(400).send({ result });
 
@@ -74,8 +76,8 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const id = Number(Object.values(req.params))
-        const result = await ProductService.deleteProduct(id)
-        const everyProd = await ProductService.getProducts()
+        const result = await productService.deleteProduct(id)
+        const everyProd = await productService.getProducts()
 
         if (result.status === 'error') return res.status(400).send({ result });
         req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
@@ -101,7 +103,7 @@ const createProduct = async (req, res) => {
         stock
     };
 
-    const result = await ProductService.createProduct(p);
+    const result = await productService.createProduct(p);
     res.sendStatus(201)
 }
 

@@ -1,11 +1,15 @@
 import cartModel from "../dao/mongo/models/cart.js";
 import { cartService } from "../services/index.js";
-import ProductService from "../services/repositories/product.service.js";
+import { productService } from "../services/index.js";
+import shortid from "shortid";
+import { ticketService } from "../services/index.js";
 
 const getCartByID = async (req, res) => {
-    let id = Number(Object.values(req.params))
+
+    const { cid } = req.params;
+    //let id = Number(Object.values(req.params))
     //console.log(id)
-    const cart = await cartService.getCartByID({ _id: id }).lean()
+    const cart = await cartService.getCartByID({ _id: cid }).lean()
     // console.log(prod)
 
     res.send(cart.products)
@@ -54,9 +58,19 @@ const addProd = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-
+}
+const addProdBack = async (req, res) => {
+    const { cid, pid } = req.params;
+    const quantity = 1
+    try {
+        const result = await cartService.addProductsToCart(cid, pid, quantity);
+        res.sendStatus(201)
+    } catch (error) {
+        console.log(error)
+    }
 
 }
+
 
 const deleteCart = async (req, res) => {
     const { cid } = req.params
@@ -81,31 +95,35 @@ const updateQ = async (req, res) => {
 
 
 
-createTicket = async (req, res) => {
+const createTicket = async (req, res) => {
 
     try {
         const user = req.user
         const { cid } = req.params
         const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
-        //console.log(cart)
+        console.log(cart)
         const prod = cart.products
         const ticketProd = []
         let prodLeft = []
         let acumulador = 0
         // console.log(prod)
         async function update(pid, updatedProduct) {
-            const result = await ProductService.updateProduct(pid, updatedProduct)
+            const result = await productService.updateProduct(pid, updatedProduct)
+
+        }
+        async function cartupdate(cid, pid, newStock) {
+            const response = await cartService.deleteProduct(cid, pid);
+
         }
         prod.forEach(p => {
             if (p.quantity <= p.product.stock) {
-                let quantity = p.quantity - p.product.stock
                 let pid = p.product._id
                 let newStock = p.product.stock - p.quantity
                 let updatedProduct = { stock: newStock }
                 //console.log(pid, newStock)
                 try {
                     update(pid, updatedProduct)
-                    cartService.updateQuantity(cid, pid, quantity);
+                    cartupdate(cid, pid, newStock)
                 } catch (error) {
                     console.log(error)
                 }
@@ -130,12 +148,8 @@ createTicket = async (req, res) => {
             products: ticketProd
         }
 
-        ticketModel.create(ticket)
-
-
-
-
-        return res.send(prodLeft, { status: 'success' })
+        ticketService.createTicket(ticket)
+        return res.send(prodLeft)
     } catch (error) {
         console.log(error)
         return res.send({ status: 'error' })
@@ -151,5 +165,5 @@ export default {
     deleteProd,
     updateQ,
     showCart,
-    createTicket
+    createTicket, addProdBack
 };

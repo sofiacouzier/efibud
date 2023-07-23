@@ -6,7 +6,7 @@ export default class ProductsManager {
         return productModel.find().lean()
     }
     getProductsBy = (params) => {
-        return productModel.findOne(params).lean()
+        return productModel.findById(params).lean()
     }
     createProduct = (product) => {
         return productModel.create(product)

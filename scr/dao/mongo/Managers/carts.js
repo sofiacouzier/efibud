@@ -45,7 +45,13 @@ export default class CartsManager {
         const cart = await cartModel.findOne({ _id: cid }).lean();
         const prodInCart = cart.products
         const prod = prodInCart.find(({ product }) => product._id == pid)
-        prod.quantity = quantity
+        console.log(prod)
+        try {
+            console.log(quantity)
+            prod.quantity = quantity
+        } catch (error) {
+            console.log(error)
+        }
         return cartModel.updateOne({ _id: cid }, cart)
 
     }
@@ -57,7 +63,6 @@ export default class CartsManager {
         if (p) {
             const newP = prodInCart.splice(prodInCart.findIndex(({ product }) => product._id == pid))
             cart.products = newP
-
             return await cartModel.updateOne({ _id: cid }, cart)
         } else {
             console.log("no existe el producto en el carrito")

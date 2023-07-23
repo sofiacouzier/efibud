@@ -23,19 +23,9 @@ router.post('/', cartController.createCart)
 
 router.get('/', cartController.getCart);
 
+//router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), cartController.addProdBack)
 
-// router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
-//     console.log(req.user)
-//     const { cid, pid } = req.params;
-//     const quantity = 1
-//     try {
-//         const result = await cartService.addProductsToCart(cid, pid, quantity);
-//         res.sendStatus(201)
-//     } catch (error) {
-//         console.log(error)
-//     }
-
-// })
+router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), cartController.addProdBack)
 
 router.post('/agregar', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProd)
 
@@ -88,7 +78,7 @@ router.put('/:cid/products/:pid', cartController.updateQ)
 // })
 
 
-router.get("/ticket")
+// agregar front: router.get("/ticket")
 
 router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), cartController.createTicket)
 // router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), async (req, res) => {
@@ -147,6 +137,5 @@ router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), cart
 //         return res.send({ status: 'error' })
 //     }
 // })
-// arreglar router.post('/:cid/purchase', ticketController.createTicket())
 
 export default router
