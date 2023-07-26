@@ -1,4 +1,5 @@
-import mongodb, { ObjectId } from "mongodb";
+import { noStock } from "../../../constants/productError.js";
+import EErors from "../../../constants/EErrors.js";
 import mongoose from "mongoose";
 import cartModel from "../models/cart.js";
 import ProductsManager from "./products.js";
@@ -25,17 +26,25 @@ export default class CartsManager {
 
         if (cart) {
             const prodInCart = cart.products
-            console.log("carrito", prodInCart)
+            //console.log("carrito", prodInCart)
             const proadded = prodInCart.find(({ product }) => product._id == pid)
+            if (proadded.stock < 0) {
+                ErrorsService.createError({
+                    name: "Error al agregar producto al carrito",
+                    cause: noStock(proadded),
+                    code: EErors.NO_STOCK,
+                    status: 400
+                })
+            }
             //console.log(proadded.quantity)
             if (proadded) {
-                console.log("el p esta en el carrito")
+                //console.log("el p esta en el carrito")
                 const newQ = Number(proadded.quantity) + Number(quantity)
                 proadded.quantity = newQ
-                console.log("hola", proadded.quantity)
+
                 return cartModel.updateOne({ _id: cid }, cart)
             } else {
-                console.log("no esta en el carrito")
+                //console.log("no esta en el carrito")
                 return cartModel.updateOne({ _id: cid }, { $push: { products: { product: new mongoose.Types.ObjectId(pid), quantity: quantity } } })
             }
 
@@ -45,9 +54,9 @@ export default class CartsManager {
         const cart = await cartModel.findOne({ _id: cid }).lean();
         const prodInCart = cart.products
         const prod = prodInCart.find(({ product }) => product._id == pid)
-        console.log(prod)
+        //console.log(prod)
         try {
-            console.log(quantity)
+            // console.log(quantity)
             prod.quantity = quantity
         } catch (error) {
             console.log(error)

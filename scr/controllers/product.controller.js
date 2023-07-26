@@ -1,4 +1,4 @@
-
+import { productErrorIncompleteValues } from "../constants/productError.js";
 import productModel from "../dao/mongo/models/product.js";
 import { productService } from "../services/index.js";
 
@@ -92,7 +92,15 @@ const deleteProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
     const { title, description, price, thumbnail, code, stock } = req.body;
-    if (!title || !description || !price || !thumbnail || !code || !stock) return res.status(400).send({ status: "error", error: "incomplete values" });
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+        ErrorService.createError({
+            name: "error de creacion",
+            cause: productErrorIncompleteValues(title, description, price, thumbnail, code, stock),
+            message: "error intentando loguear un usuario",
+            code: EErors.INCOMPLETE_VALUES
+        })
+        return res.status(400).send({ status: "error", error: "incomplete values" });
+    }
 
     const p = {
         title,

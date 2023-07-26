@@ -6,6 +6,9 @@ import GithubStrategy from 'passport-github2';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { cartService, userService } from '../services/index.js';
 import TokenDTO from '../dto/user/TokenDto.js';
+import ErrorService from '../services/ErrorServices.js';
+import { userErrorIncompleteValues } from '../constants/userError.js';
+import EErors from '../constants/EErrors.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
 
@@ -17,6 +20,8 @@ const initializePassportStrategies = () => {
             async (req, email, password, done) => {
                 try {
                     const { first_name, last_name, role } = req.body;
+
+
                     // el usuario ya existe?
                     const exists = await userService.getUserBy({ email });
                     if (exists)
@@ -42,6 +47,14 @@ const initializePassportStrategies = () => {
                     //Si todo salió bien, Ahí es cuando done debe finalizar bien.
                     return done(null, result)
                 } catch (error) {
+                    if (!first_name || !email || !password) {
+                        ErrorService.createError({
+                            name: "error de creacion",
+                            cause: userErrorIncompleteValues(first_name, email, password),
+                            message: "error intentando registrar un usuario",
+                            code: EErors.INCOMPLETE_VALUES
+                        })
+                    }
                     done(error);
                 }
             }
@@ -80,6 +93,15 @@ const initializePassportStrategies = () => {
 
 
                 } catch (error) {
+                    if (!email || !password) {
+                        ErrorService.createError({
+                            name: "error de ingreso",
+                            cause: userErrorIncompleteValues(email, password),
+                            message: "error intentando loguear un usuario",
+                            code: EErors.INCOMPLETE_VALUES
+                        })
+                    }
+
                     return done(error)
                 }
             }

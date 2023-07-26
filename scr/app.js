@@ -18,6 +18,9 @@ import SessionRouter from "./routes/session.router.js";
 import passport from 'passport';
 import initializePassportStrategies from "./config/passport.config.js";
 import config from "./config.js";
+import mockingRouter from './routes/mocking.router.js'
+import errorHandler from './middlewares/error.js'
+import ErrorService from "./services/ErrorServices.js";
 
 
 const productmanager = new ProductManager
@@ -65,7 +68,7 @@ app.use('/api/cart', CartRouter)
 //app.use('/api/products', productRouter)
 //app.use('/api/cart', cartrouter)
 
-
+app.use('/api/prodycts', mockingRouter)
 app.use('/', viewsRouter);
 
 //app.use('/api/sessions', router);
@@ -79,3 +82,5 @@ io.on('connection', async socket => {
     //console.log(p)
     io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })
+
+app.use(errorHandler)

@@ -66,6 +66,7 @@ const addProdBack = async (req, res) => {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(201)
     } catch (error) {
+
         console.log(error)
     }
 
