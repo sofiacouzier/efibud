@@ -1,7 +1,6 @@
 {
   "name": "copia-de-1er-desafio",
   "version": "1.0.0",
-  "description": "",
   "main": "ProductManager.js",
   "scripts": {
     "start": "node scr/app.js",
@@ -34,6 +33,7 @@
     "mongodb": "^5.5.0",
     "mongoose": "^7.2.0",
     "mongoose-paginate-v2": "^1.7.1",
+    "nodemailer": "^6.9.4",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",
@@ -42,6 +42,8 @@
     "shortid": "^2.2.16",
     "socket.io": "^4.6.1",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.7.12"
-  }
+    "sweetalert2": "^11.7.12",
+    "winston": "^3.10.0"
+  },
+  "description": ""
 }

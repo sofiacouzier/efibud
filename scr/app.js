@@ -9,19 +9,17 @@ import mongoose from "mongoose";
 import ProductSRouter from "./routes/product.router.js";
 import CartRouter from "./routes/cart.router.js";
 import ProductManager from "./dao/fileSystem/Managers/ProductManager.js"
-//import productRouter from "./routes/products.js";
-//import cartrouter from "./routes/cart.js";
 import viewsRouter from "./routes/views.router.js";
 import registerChatHandler from "./listeners/chatHandler.js";
 import SessionRouter from "./routes/session.router.js";
-//import { router } from "./routes/session.router.js";
 import passport from 'passport';
 import initializePassportStrategies from "./config/passport.config.js";
 import config from "./config.js";
 import mockingRouter from './routes/mocking.router.js'
 import errorHandler from './middlewares/error.js'
 import ErrorService from "./services/ErrorServices.js";
-
+import nodemailer from 'nodemailer';
+import attachLogger from "./middlewares/logger.js";
 
 const productmanager = new ProductManager
 
@@ -32,11 +30,25 @@ const server = app.listen(PORT, () => console.log("Listening on 8080"))
 const connection = mongoose.connect(config.mongo.URL)
 const io = new Server(server)
 
+
+//usar para mandar mails:
+const transport = nodemailer.createTransport({
+    service: 'gmail',
+    port: 587,
+    auth: {
+        user: config.app.APP_EMAIL,
+        pass: config.app.APP_PASWORD
+    }
+})
+
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
-
+app.use(attachLogger)
 const sessionsRouter = new SessionRouter();
 
 app.engine('handlebars', handlebars.engine());

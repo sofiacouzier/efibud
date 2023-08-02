@@ -44,7 +44,7 @@ const createCart = async (req, res) => {
 
         return res.status(200).send({ result });
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
     }
 }
 
@@ -56,7 +56,7 @@ const addProd = async (req, res) => {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(200)
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
     }
 }
 const addProdBack = async (req, res) => {
@@ -66,8 +66,7 @@ const addProdBack = async (req, res) => {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(201)
     } catch (error) {
-
-        console.log(error)
+        req.logger.error(error)
     }
 
 }
@@ -152,7 +151,7 @@ const createTicket = async (req, res) => {
         ticketService.createTicket(ticket)
         return res.send(prodLeft)
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
         return res.send({ status: 'error' })
     }
 }

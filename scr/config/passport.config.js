@@ -47,6 +47,7 @@ const initializePassportStrategies = () => {
                     //Si todo salió bien, Ahí es cuando done debe finalizar bien.
                     return done(null, result)
                 } catch (error) {
+                    req.logger.error(error)
                     if (!first_name || !email || !password) {
                         ErrorService.createError({
                             name: "error de creacion",
@@ -93,6 +94,8 @@ const initializePassportStrategies = () => {
 
 
                 } catch (error) {
+                    req.logger.error(error)
+
                     if (!email || !password) {
                         ErrorService.createError({
                             name: "error de ingreso",
@@ -147,6 +150,7 @@ const initializePassportStrategies = () => {
 
             return done(null, payload);
         } catch (error) {
+            req.logger.warning(error)
             return done(error)
         }
 

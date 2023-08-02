@@ -23,7 +23,7 @@ const showProducts = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+        req.logger.warning(error) //front
     }
 }
 
@@ -54,7 +54,7 @@ const addProducts = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
     }
 
 }
@@ -69,7 +69,7 @@ const updateProduct = async (req, res) => {
 
         return res.status(200).send({ result });
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
     }
 }
 
@@ -85,7 +85,7 @@ const deleteProduct = async (req, res) => {
         return res.status(200).send({ message: "producto eliminado" });
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
     }
 }
 
