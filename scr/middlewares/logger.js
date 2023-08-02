@@ -1,6 +1,6 @@
 import LoggerService from "../services/LoggerService.js";
 
-const logger = new LoggerService("prod")
+const logger = new LoggerService(process.env.LOGGER)
 
 const attachLogger = (req, res, next) => {
     req.logger = logger.logger;
