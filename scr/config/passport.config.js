@@ -9,6 +9,7 @@ import TokenDTO from '../dto/user/TokenDto.js';
 import ErrorService from '../services/ErrorServices.js';
 import { userErrorIncompleteValues } from '../constants/userError.js';
 import EErors from '../constants/EErrors.js';
+import config from './config.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
 
@@ -68,7 +69,7 @@ const initializePassportStrategies = () => {
             async (email, password, done) => {
                 let resultUser;
                 try {
-                    if (email === "admin@admin.com" && password === "123") {
+                    if (email === config.app.SUPERADMIN_EMAIL && password === config.app.SUPERADMIN_PASSWORD) {
                         //Acaba de entrar como SUPER ADMIN
                         resultUser = {
                             name: "Admin",
@@ -144,7 +145,7 @@ const initializePassportStrategies = () => {
     //verifico token de manera mas prolija
     passport.use('jwt', new Strategy({
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: 'jwtSecret',
+        secretOrKey: config.jwt.SECRET,
     }, async (payload, done) => {
         try {
 

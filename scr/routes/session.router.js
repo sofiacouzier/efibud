@@ -1,8 +1,4 @@
-import { Router } from "express";
-import passport from 'passport';
-import userModel from "../dao/mongo/models/users.js";
 import { passportCall, createHash, validatePassword, generateToken } from "../services/auth.js";
-import { authToken } from '../middlewares/jwtAuth.js'
 import BaseRouter from "./Router.js";
 import sessionController from "../controllers/session.controller.js";
 

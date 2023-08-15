@@ -14,7 +14,7 @@ import registerChatHandler from "./listeners/chatHandler.js";
 import SessionRouter from "./routes/session.router.js";
 import passport from 'passport';
 import initializePassportStrategies from "./config/passport.config.js";
-import config from "./config.js";
+import config from "./config/config.js";
 import mockingRouter from './routes/mocking.router.js'
 import errorHandler from './middlewares/error.js'
 import ErrorService from "./services/ErrorServices.js";
@@ -36,8 +36,8 @@ const transport = nodemailer.createTransport({
     service: 'gmail',
     port: 587,
     auth: {
-        user: config.app.APP_EMAIL,
-        pass: config.app.APP_PASWORD
+        user: config.mailer.USER,
+        pass: config.mailer.PASSWORD
     }
 })
 
