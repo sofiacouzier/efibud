@@ -7,7 +7,8 @@ export default {
     app: {
         PORT: process.env.PORT || 8080,
         SUPERADMIN_EMAIL: process.env.SUPERADMIN_EMAIL,
-        SUPERADMIN_PASSWORD: process.env.SUPERADMIN_PASSWORD
+        SUPERADMIN_PASSWORD: process.env.SUPERADMIN_PASSWORD,
+        PERSISTENCE: process.env.PERSISTENCE
     },
     transport: {
 

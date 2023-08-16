@@ -48,7 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
-app.use(attachLogger)
+//app.use(attachLogger)
 const sessionsRouter = new SessionRouter();
 
 app.engine('handlebars', handlebars.engine());
@@ -85,6 +85,23 @@ app.use('/', viewsRouter);
 
 //app.use('/api/sessions', router);
 app.use('/api/sessions', sessionsRouter.getRouter());
+
+app.get('/mail', async (req, res) => {//usar para mandar mails:
+
+
+    const result = await transport.sendMail({
+        from: 'Sofart soficouzier@gmail.com',
+        to: 'soficouzier@gmail.com',
+        subject: 'restablecimiento de contrasena',
+        html: `
+        <div>
+        <h1>¡Alto ahí, esta es una prueba!</h1>
+        <a href="http://localhost:8080/register" >Ir a la página</a>
+       `
+    })
+
+    res.send({ status: "success", payload: result })
+})
 
 
 io.on('connection', async socket => {

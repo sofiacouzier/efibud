@@ -1,6 +1,7 @@
 import { passportCall, createHash, validatePassword, generateToken } from "../services/auth.js";
 import BaseRouter from "./Router.js";
 import sessionController from "../controllers/session.controller.js";
+import nodemailer from 'nodemailer';
 
 export default class SessionRouter extends BaseRouter {
     init() {
@@ -8,7 +9,7 @@ export default class SessionRouter extends BaseRouter {
             res.sendSuccess("Registered")
         })//O AUTH-> solo entran los q no tienen usuario
 
-
+        this.post('/newPassword', ["NO_AUTH"], sessionController.newPassword)
 
         this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), sessionController.login)
         // this.post('/login', ["NO_AUTH"], passportCall('login', { strategyType: "locals" }), async (req, res) => {
@@ -20,7 +21,9 @@ export default class SessionRouter extends BaseRouter {
         //     }).sendSuccess("logged in")
         // })
 
-        this.post('/restorePassword', sessionController.restorePassword)
+
+
+        this.post('/restorePassword', ["NO_AUTH"], sessionController.restorePassword)
         // this.post('/restorePassword', async (req, res) => {
         //     const { email, password } = req.body;
         //     //¿El usuario sí existe?

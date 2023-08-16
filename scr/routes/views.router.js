@@ -45,6 +45,9 @@ router.get('/profile', passportCall("jwt", { redirect: "/login" }), (req, res) =
 router.get('/restorePassword', privacy('NO_AUTHENTICATED'), (req, res) => {
     res.render('restorePassword')
 })
+router.get('/newPassword', privacy('NO_AUTHENTICATED'), (req, res) => {
+    res.render('newPassword')
+})
 
 router.get('/admin', passportCall('jwt', { redirect: '/login' }), authRoles('admin'), (req, res) => {
     //console.log(req.user);
