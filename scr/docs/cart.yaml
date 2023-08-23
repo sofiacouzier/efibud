@@ -1,9 +1,14 @@
+openapi: 3.0.1
+info:
+  title: API Carrito
+  version: 1.0.0
+
 paths:
   /api/cart:
     get:
       summary: Obtiene todos los carritos 
       tags:
-        - Carts
+       - Carts
       responses:
         "200":
           description: "Los carritos del usuario fueron obtenidos satisfactoriamente"
@@ -33,7 +38,7 @@ paths:
         "500":
           description: "Error interno del servidor"
 
- /api/cart/{cid}:
+  /api/cart/{cid}:
     get:
       summary: Obtiene un carrito a partir del id proporcionado
       tags:
@@ -71,10 +76,10 @@ paths:
         "200":
           description: "el carrito fue eliminado satisfactoriamente"
         "500":
-          description: "Error interno del servidor"          
+          description: "Error interno del servidor"
 
-/api/carts/{cid}/product/{pid}:
- post:
+  /api/carts/{cid}/product/{pid}:
+    post:
       summary: Coloca la cantidad de un producto en el carrito
       tags:
         - Carts
@@ -115,7 +120,7 @@ paths:
           description: "Solicitud incorrecta"
         "500":
           description: "Error interno del servidor"
- delete:
+    delete:
       summary: Elimina un producto del carrito
       tags:
         - Carts
@@ -141,7 +146,7 @@ paths:
           description: "Producto o carrito no encontrado"
         "500":
           description: "Error interno del servidor"
- put:
+    put:
       summary: Actualiza la cantidad de un producto en el carrito
       tags:
         - Carts
@@ -182,8 +187,9 @@ paths:
           description: "Solicitud incorrecta"
         "500":
           description: "Error interno del servidor"
-/api/carts/{cid}/purchase:
-   post:
+
+  /api/carts/{cid}/purchase:
+    post:
       summary: Verifica el stock y realiza la compra del carrito
       tags:
         - Carts
@@ -206,9 +212,6 @@ paths:
           description: "Error interno del servidor"
 
 
-
-
-
 components:
   schemas:
     Cart:
@@ -226,7 +229,10 @@ components:
               quantity:
                 type: number
                 description: Cantidad del producto en el carrito
-       status: 
-           type: boolean
-           description: Status
-    
+        status: 
+          type: boolean
+          description: Status
+
+
+
+      

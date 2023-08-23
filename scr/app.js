@@ -37,16 +37,14 @@ const swaggerOptions = {
         openapi: '3.0.1',
         info: {
             title: 'ecommerce',
-            description: 'documentacion para API del ecommerce'
+            description: 'Documentation API'
         }
     },
-    apis: [`${__dirname}/../docs/**/*.yaml`]
+    apis: [`${__dirname}/docs/**/*.yaml`]
 }
 
 const specs = swaggerJSDoc(swaggerOptions)
-
 app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
-
 
 
 

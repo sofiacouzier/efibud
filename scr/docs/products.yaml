@@ -6,20 +6,20 @@ paths:
      - Products
     responses:
      "200":
-     description: los productos se obtienen correctamente
-     content:
+      description: los productos se obtienen correctamente
+      content:
        application/json:
          schema:
              type: array
              items: 
              $ref: '#components/schemas/Product'
-        
+       
   post:
     summary: crea un producto
     tags:
      - Products
     responses:
-     "201":
+      "200":
        description: los productos se crean correctamente
       "400":
        description: los datos proporcionados no son suficientes
@@ -37,16 +37,16 @@ paths:
           schema:
             type: string
     responses:
-     "200":
-      description: los productos se obtienen correctamente
-      content:
-       application/json:
+      "200":
+       description: los productos se obtienen correctamente
+       content:
+        application/json:
          schema:
              type: array
              items: 
              $ref: '#components/schemas/Product'
-     "500":
-          description: "Error interno del servidor"
+      "500":
+        description: "Error interno del servidor"
   delete:
     summary: elimina el producto de la base a partir del id proporcionado
     tags:
@@ -59,11 +59,11 @@ paths:
           schema:
             type: string
     responses:
-     "200":
-     description: el producto se obtiene correctamente
-     "400":
-     description: error al intentar eliminar el producto
-     "500":
+      "200":
+       description: el producto se obtiene correctamente
+      "400":
+       description: error al intentar eliminar el producto
+      "500":
           description: "Error interno del servidor"
   put:
     summary: cambia ciertos parametros de un producto a partir del id proporcionado
@@ -84,45 +84,45 @@ paths:
             schema:
               $ref: '#/components/requestBodies/UpdateProduct'
     responses:
-     "200":
-     description: el producto se obtiene correctamente
-     "400":
-     description: error al intentar eliminar el producto
-     "500":
+      "200":
+       description: el producto se obtiene correctamente
+      "400":
+       description: error al intentar eliminar el producto
+      "500":
           description: "Error interno del servidor"
 
 
-
-
 components:
- schemas:
-   Product:
-     type: object
-     properties:
-        title: 
-           type: string
-           description: Nombre del producto
+   schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto
         description:
-           type: string
-           description: Descripcion del producto
-       price: 
-           type: string
-           description: Precio del producto
-       status: 
-           type: boolean
-           description: Status
-       thumbnail:
-           type: image
-           description: Fotografia del producto      
-      code:
-           type: string
-           description: Codigo unico de cada producto
-      stock: 
-           type: string
-           description: cantidad de producto dispobles
-  requestBodies:
-    UpdateProduct:
-       type: object
+          type: string
+          description: Descripción del producto
+        price:
+          type: number
+          description: Precio del producto
+        code:
+          type: string
+          description: Código único del producto
+        stock:
+          type: number
+          description: Stock del producto
+        status:
+          type: boolean
+          description: Estado del producto (true = activo, false = inactivo)
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Miniaturas del producto
+   requestBodies:
+     UpdateProduct:
+      type: object
       properties:
         title:
           type: string
@@ -132,7 +132,6 @@ components:
           description: Descripción del producto
         price:
           type: number
-          format: float
           description: Precio del producto
         stock:
           type: number
@@ -143,6 +142,12 @@ components:
         category:
           type: string
           description: Categoría del producto
-         thumbnail:
-           type: image
-           description: Fotografia del producto 
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Miniaturas del producto
+        owner:
+          type: string
+          description: Dueño del producto
+
