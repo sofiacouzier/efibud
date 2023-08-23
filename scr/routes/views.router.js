@@ -2,8 +2,6 @@ import { Router } from "express";
 import { authRoles, privacy } from "../middlewares/auth.js";
 import { passportCall } from "../services/auth.js";
 import productController from "../controllers/product.controller.js";
-import { cartService } from "../services/index.js";
-import cartModel from "../dao/mongo/models/cart.js";
 import cartController from "../controllers/cart.controller.js";
 const router = Router();
 
@@ -15,7 +13,6 @@ router.get('/', passportCall("jwt", { strategyType: "jwt" }), productController.
 router.get('/chat', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), async (req, res) => {
     res.render('chat')
 })
-//capas?
 
 
 router.get('/cart', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
@@ -50,7 +47,6 @@ router.get('/newPassword', privacy('NO_AUTHENTICATED'), (req, res) => {
 })
 
 router.get('/admin', passportCall('jwt', { redirect: '/login' }), authRoles('admin'), (req, res) => {
-    //console.log(req.user);
     res.render('jwtProfile', { user: req.user })
 
 })

@@ -1,0 +1,232 @@
+paths:
+  /api/cart:
+    get:
+      summary: Obtiene todos los carritos 
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: "Los carritos del usuario fueron obtenidos satisfactoriamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        "500":
+          description: "Error interno del servidor"
+    post:
+      summary: crea un carrito
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: "el carrito fue creado satisfactoriamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        "400":
+          description: "Error al crear el carrito"
+        "500":
+          description: "Error interno del servidor"
+
+ /api/cart/{cid}:
+    get:
+      summary: Obtiene un carrito a partir del id proporcionado
+      tags:
+        - Carts
+      parameters:
+          name: cid
+          in: path
+          description: Código único del carrito.
+          required: true
+          schema:
+            type: string        
+      responses:
+        "200":
+          description: "el carrito fue obtenido satisfactoriamente"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        "500":
+          description: "Error interno del servidor"
+    delete:
+      summary: Elimina un carrito a partir del id proporcionado
+      tags:
+        - Carts
+      parameters:
+          name: cid
+          in: path
+          description: Código único del carrito.
+          required: true
+          schema:
+            type: string        
+      responses:
+        "200":
+          description: "el carrito fue eliminado satisfactoriamente"
+        "500":
+          description: "Error interno del servidor"          
+
+/api/carts/{cid}/product/{pid}:
+ post:
+      summary: Coloca la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID único del carrito.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+        - name: pid
+          in: path
+          description: ID único del producto.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        description: Cantidad del producto a agregar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad del producto
+      responses:
+        "200":
+          description: "El producto fue agregado satisfactoriamente en el carrito"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "400":
+          description: "Solicitud incorrecta"
+        "500":
+          description: "Error interno del servidor"
+ delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID único del carrito.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+        - name: pid
+          in: path
+          description: ID único del producto.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        "200":
+          description: "El producto fue eliminado satisfactoriamente del carrito"
+        "400":
+          description: "Producto o carrito no encontrado"
+        "500":
+          description: "Error interno del servidor"
+ put:
+      summary: Actualiza la cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID único del carrito.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+        - name: pid
+          in: path
+          description: ID único del producto.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        description: Cantidad del producto a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad del producto a actualizar
+      responses:
+        "200":
+          description: "El producto fue actualizado satisfactoriamente en el carrito"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "400":
+          description: "Solicitud incorrecta"
+        "500":
+          description: "Error interno del servidor"
+/api/carts/{cid}/purchase:
+   post:
+      summary: Verifica el stock y realiza la compra del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: ID único del carrito.
+          required: true
+          schema:
+            type: string
+            format: ObjectId
+      security:
+        - jwt: ['AUTH', 'USER', 'PREMIUM']
+      responses:
+        "200":
+          description: "Compra realizada satisfactoriamente"
+        "400":
+          description: "Error al crear el ticket o stock insuficiente"
+        "500":
+          description: "Error interno del servidor"
+
+
+
+
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                format: ObjectId
+                description: ID del producto
+              quantity:
+                type: number
+                description: Cantidad del producto en el carrito
+       status: 
+           type: boolean
+           description: Status
+    

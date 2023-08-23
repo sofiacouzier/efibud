@@ -1,6 +1,5 @@
-//import userModel from "../models/users.js";
-
 import userModel from "../models/users.js";
+
 export default class UsersManager {
     getUsers = (params) => {
         return userModel.find(params).lean();

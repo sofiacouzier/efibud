@@ -1,44 +1,13 @@
-import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
 import { privacy } from "../middlewares/auth.js";
 import { passportCall } from "../services/auth.js";
+import BaseRouter from "./Router.js";
 
-const cartrouter = Router()
+export default class cartrouter extends BaseRouter {
+    init() {
+        this.post("/", ["PRIVATE"], cartController.createCart)
+        this.get("/:cid", ["PRIVATE"], cartController.getCartByID)
+        this.post("/product/:pid", ["PRIVATE"], passportCall("jwt", { strategyType: "jwt" }), cartController.addProd)
 
-//CAPAS
-
-// cartrouter.post("/", async (req, res) => {
-//     try {
-//         const result = await cartService.createCart()
-
-//         if (result.status === 'error') return res.status(400).send({ result });
-
-//         return res.status(200).send({ result });
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
-
-cartrouter.post("/", cartController.createCart)
-
-// cartrouter.get("/:cid", async (req, res) => {
-//     let id = Number(Object.values(req.params))
-//     //console.log(id)
-//     const cart = await cartService.getCartByID(id)
-//     // console.log(prod)
-//     res.send(cart.products)
-// })
-cartrouter.get("/:cid", cartController.getCartByID)
-
-cartrouter.post("/product/:pid", passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProd)
-// cartrouter.post("/:cid/product/:pid", async (req, res) => {
-//     let cid = Number(Object.values(req.params.cid))
-//     let pid = Number(Object.values(req.params.pid))
-//     let quantity = Number(Object.values(req.body)) || 1
-//     console.log(quantity)
-//     const newCart = await cartService.addProductsToCart(cid, pid, quantity)
-//     //console.log(newCart)
-//     return res.status(200).send({ newCart });
-// })
-
-export default cartrouter
+    }
+}

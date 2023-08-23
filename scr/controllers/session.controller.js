@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer'
 import { createHash, validatePassword, generateToken } from "../services/auth.js";
 import { userService } from "../services/index.js";
 import DTemplates from '../constants/DTemplates.js';
@@ -7,14 +6,7 @@ import MailingService from '../services/MailingServices.js';
 import config from '../config/config.js'
 import jwt from 'jsonwebtoken';
 
-const transport = nodemailer.createTransport({
-    service: 'gmail',
-    port: 587,
-    auth: {
-        user: config.mailer.USER,
-        pass: config.mailer.PASSWORD
-    }
-})
+
 
 
 
@@ -38,6 +30,7 @@ const restorePassword = async (req, res) => {
     res.sendSuccess("password restored");
 }
 
+
 const newPassword = async (req, res) => {
     console.log(req.body)
     const { password, token } = req.body
@@ -57,13 +50,9 @@ const newPassword = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-    // const isSamePassword = await validatePassword(password, user.password);
-    // if (isSamePassword) return res.sendInternalError(error = "Cannot replace password with current password")
-    //Ahora sí, actualizamos
-    //    const newHashedPassword = await createHash(password);
-    // id = user.id
-    // await userModel.updateUser({ id }, { $set: { password: newHashedPassword } });
+
 }
+
 
 const login = async (req, res) => {
     const accessToken = generateToken(req.user);
@@ -73,6 +62,7 @@ const login = async (req, res) => {
         httpOnly: true
     }).sendSuccess("logged in")
 }
+
 
 export default {
     newPassword,

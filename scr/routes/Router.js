@@ -38,7 +38,6 @@ export default class BaseRouter {
             //Éste debería venir ya con el usuario parseado desde jwt ¿no?
             const user = req.user;
             if (policies[0] === "NO_AUTH" && user) {
-                //console.log(user)
                 return res.status(401).send({ status: "error", error: "Unauthorized" })//si es para log pero ya tiene usuario, qur no pase
             }
 

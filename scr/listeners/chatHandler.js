@@ -1,6 +1,4 @@
-
 import { messageService } from "../services/index.js";
-// const messagesServices = new MessageManager(); lo estoy importando directo del index
 
 const registerChatHandler = (io, socket) => {
 

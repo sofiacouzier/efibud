@@ -120,7 +120,6 @@ const initializePassportStrategies = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    //console.log(profile);
                     //Tomo los datos que me sirvan.
                     const { name, email } = profile._json;
                     const user = await userService.getUserBy({ email });
@@ -135,7 +134,7 @@ const initializePassportStrategies = () => {
                         const result = await userService.createUser(newUser);
                         done(null, result);
                     }
-                    //Si el usuario ya existía, Qué mejor!!! 
+                    //Si el usuario ya existía
                     done(null, user);
                 } catch (error) {
                     done(error);

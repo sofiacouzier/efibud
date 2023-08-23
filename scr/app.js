@@ -17,9 +17,25 @@ import initializePassportStrategies from "./config/passport.config.js";
 import config from "./config/config.js";
 import mockingRouter from './routes/mocking.router.js'
 import errorHandler from './middlewares/error.js'
-import ErrorService from "./services/ErrorServices.js";
-import nodemailer from 'nodemailer';
-import attachLogger from "./middlewares/logger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
+
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'ecommerce',
+            description: 'documentacion para API del ecommerce'
+        }
+    },
+    apis: [`${__dirname}/../docs/**/*.yaml`]
+}
+
+const specs = swaggerJSDoc(swaggerOptions)
+
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+
 
 const productmanager = new ProductManager
 
@@ -31,17 +47,6 @@ const connection = mongoose.connect(config.mongo.URL)
 const io = new Server(server)
 
 
-//usar para mandar mails:
-const transport = nodemailer.createTransport({
-    service: 'gmail',
-    port: 587,
-    auth: {
-        user: config.mailer.USER,
-        pass: config.mailer.PASSWORD
-    }
-})
-
-
 
 
 app.use(express.json());
@@ -50,6 +55,9 @@ app.use(express.static(`${__dirname}/public`))
 app.use(cookieParser())
 //app.use(attachLogger)
 const sessionsRouter = new SessionRouter();
+const cartRouter = new CartRouter();
+
+
 
 app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`);
@@ -75,7 +83,7 @@ app.use(passport.initialize());
 initializePassportStrategies();
 
 app.use('/api/products', ProductSRouter)
-app.use('/api/cart', CartRouter)
+app.use('/api/cart', cartRouter.getRouter())
 
 //app.use('/api/products', productRouter)
 //app.use('/api/cart', cartrouter)
@@ -86,29 +94,12 @@ app.use('/', viewsRouter);
 //app.use('/api/sessions', router);
 app.use('/api/sessions', sessionsRouter.getRouter());
 
-app.get('/mail', async (req, res) => {//usar para mandar mails:
-
-
-    const result = await transport.sendMail({
-        from: 'Sofart soficouzier@gmail.com',
-        to: 'soficouzier@gmail.com',
-        subject: 'restablecimiento de contrasena',
-        html: `
-        <div>
-        <h1>¡Alto ahí, esta es una prueba!</h1>
-        <a href="http://localhost:8080/register" >Ir a la página</a>
-       `
-    })
-
-    res.send({ status: "success", payload: result })
-})
 
 
 io.on('connection', async socket => {
     registerChatHandler(io, socket);
     console.log("Nuevo cliente conectado");
     const p = await productmanager.getProducts()
-    //console.log(p)
     io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })
 

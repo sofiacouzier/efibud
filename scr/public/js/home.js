@@ -16,7 +16,6 @@ logoutButton.addEventListener('click', async () => {
 const agregarCarrito = document.getElementById('productos')
 
 
-//arreglar
 agregarCarrito.addEventListener('click', async (event) => {
     if (event.target.classList.contains('agregar')) {
         let prodId = event.target.dataset.id
@@ -24,7 +23,6 @@ agregarCarrito.addEventListener('click', async (event) => {
         console.log(typeof prodId)
 
         const obj = { prodId };
-        //prodId.forEach((value, key) => (obj[key] = value));
         try {
             const response = await fetch('/api/cart/agregar', {
                 method: 'POST',
@@ -34,11 +32,9 @@ agregarCarrito.addEventListener('click', async (event) => {
                 },
 
             })
-            // Mostramos la respuesta del servidor en la consola
         } catch (error) {
             console.error(error);
         }
     }
 });
 
-// probar: agregarCarrito.addEventListener('submit',)

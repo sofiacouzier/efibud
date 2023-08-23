@@ -1,19 +1,15 @@
-import cartModel from "../dao/mongo/models/cart.js";
 import { cartService } from "../services/index.js";
 import { productService } from "../services/index.js";
 import shortid from "shortid";
 import { ticketService } from "../services/index.js";
 
+
 const getCartByID = async (req, res) => {
-
     const { cid } = req.params;
-    //let id = Number(Object.values(req.params))
-    //console.log(id)
     const cart = await cartService.getCartByID({ _id: cid }).lean()
-    // console.log(prod)
-
     res.send(cart.products)
 };
+
 
 const showCart = async (req, res) => {
     const user = req.user
@@ -21,7 +17,6 @@ const showCart = async (req, res) => {
     const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
     const prodInCart = cart.products
     const docs = prodInCart
-    console.log(docs)
     res.render('cart', {
         docs,
         css: 'home'
@@ -59,9 +54,11 @@ const addProd = async (req, res) => {
         req.logger.error(error)
     }
 }
+
+
 const addProdBack = async (req, res) => {
     const { cid, pid } = req.params;
-    const quantity = 1
+    const quantity = req.body || 1
     try {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(201)
