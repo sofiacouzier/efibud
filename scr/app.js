@@ -31,7 +31,7 @@ const server = app.listen(PORT, () => console.log("Listening on 8080"))
 
 const connection = mongoose.connect(config.mongo.URL)
 const io = new Server(server)
-ç
+
 const swaggerOptions = {
     definition: {
         openapi: '3.0.1',
