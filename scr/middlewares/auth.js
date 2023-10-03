@@ -32,7 +32,7 @@ export const privacy = (privacyType) => {
 export const authRoles = (roles) => {
     return async (req, res, next) => {
         const allowedRoles = roles.split(',').map(role => role.trim());
-        if (!allowedRoles.includes(req.user.user.role)) return res.status(403).send({ status: "error", error: "Fobidden" })
+        if (!allowedRoles.includes(req.user.user.role)) return res.status(404).send({ status: "error", error: "Fobidden" })
         next();
 
     }

@@ -13,7 +13,6 @@ import viewsRouter from "./routes/views.router.js";
 import SessionRouter from "./routes/session.router.js";
 import UserRouter from "./routes/user.router.js";
 
-import ProductManager from "./dao/fileSystem/Managers/ProductManager.js"
 
 import registerChatHandler from "./listeners/chatHandler.js";
 import passport from 'passport';
@@ -23,10 +22,10 @@ import mockingRouter from './routes/mocking.router.js'
 import errorHandler from './middlewares/error.js'
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
+import { productService } from "./services/index.js";
 
 
 
-const productmanager = new ProductManager
 
 const app = express()
 const PORT = config.app.PORT
@@ -99,7 +98,7 @@ app.use('/api/users', UserRouter)
 io.on('connection', async socket => {
     registerChatHandler(io, socket);
     console.log("Nuevo cliente conectado");
-    const p = await productmanager.getProducts()
+    const p = await productService.getProducts()
     io.emit("entregando productos", p)//envio los productos para que sigan apareciendo aunque no haya agregado ni eliminado productos
 })
 

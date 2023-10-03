@@ -3,7 +3,7 @@ export default class ErrorService {
         const error = new Error(message, { cause })
         error.name = name,
             error.code = code,
-            error.status = status
+            error.status = 500
 
         throw error
     }

@@ -9,6 +9,10 @@ export default class UsersManager {
         return userModel.findOne(params).lean();
     };
 
+    deleteExpired = (id) => {
+        console.log(id)
+        return userModel.findByIdAndRemove(id)
+    }
     createUser = (user) => {
         return userModel.create(user);
     };

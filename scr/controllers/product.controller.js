@@ -30,7 +30,7 @@ const showProducts = async (req, res) => {
 
 
     } catch (error) {
-        req.logger.warning(error)
+        console.log(error)
     }
 }
 

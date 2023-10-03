@@ -3,6 +3,8 @@ import { generateToken } from "../services/auth.js";
 import LoggerService from "../services/LoggerService.js";
 import MailingService from "../services/MailingServices.js";
 import DTemplates from "../constants/DTemplates.js";
+import userModel from "../dao/mongo/models/users.js";
+import mongoose from "mongoose";
 const logger = new LoggerService("dev")
 
 
@@ -40,10 +42,15 @@ const changeRole = async (req, res) => {
 const expired = async (req, res) => {
     const users = await userService.getExpiredUsers()
 
-    users.forEach(user => {
-        if (user.last_connection > user.last_connection.getDate() + 2) {
+    users.forEach(async (user) => {
+        const currentDate = new Date();
+        const lastConnectionDate = new Date(user.last_connection);
+        const timeDifference = currentDate - lastConnectionDate;
+        const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+        console.log(daysDifference)
+        if (daysDifference > 2) {
 
-            userService.deleteUser(user._id.toString())
+            await userService.deleteUser(user._id)
             try {
 
                 const mailingService = new MailingService();
@@ -56,16 +63,24 @@ const expired = async (req, res) => {
     });
     return res.status(200).send(users);
 }
+const showAdmin = async (req, res) => {
+    const user = req.user
+
+    res.render('admin', {
+        user: req.user,
+    })
+}
 
 
 const getusers = async (req, res) => {
     const users = await userService.getUsers()
     console.log(users)
-    return res.status(200).send(users);
+    return res.send(users);
 }
 
 export default {
     changeRole,
     getusers,
-    expired
+    expired,
+    showAdmin
 }

@@ -2,7 +2,9 @@ export default class UserService {
     constructor(dao) {
         this.dao = dao;
     }
-
+    deleteExpired = (id) => {
+        return this.dao.deleteExpired(id)
+    }
     getUsers = () => {
         return this.dao.getUsers();
     }
@@ -18,7 +20,7 @@ export default class UserService {
     getExpiredUsers = () => {
         return this.dao.getExpiredUsers();
     }
-    deleteUser = () => {
-        return this.dao.deleteUser();
+    deleteUser = (id) => {
+        return this.dao.deleteUser(id);
     }
 }

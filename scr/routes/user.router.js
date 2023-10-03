@@ -9,6 +9,9 @@ router.put('/premium', passportCall('jwt', { strategyType: 'jwt' }), usersContro
 
 router.get('/', passportCall('jwt', { strategyType: 'jwt' }), usersControllers.getusers)
 
+router.get('/admin', passportCall('jwt', { strategyType: 'jwt' }), authRoles("admin"), usersControllers.showAdmin)
+
+
 router.delete('/', passportCall('jwt', { strategyType: 'jwt' }), authRoles("admin"), usersControllers.expired)
 
 

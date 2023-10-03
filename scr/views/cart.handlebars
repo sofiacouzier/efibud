@@ -10,11 +10,13 @@
     <h2>cantidad {{this.quantity}}</h2>
 </div>
 {{/each}}
+{{#if docs}}
+<a><button id="ticket" data={{cart}} type="button">finalizar la compra</button></a>
 
-<a><button id="ticket" type="button">finalizar la compra</button></a>
+{{/if}}
+
 
 <a href="/"><button>volver al inicio</button></a>
 
-
-<script src="/scr/public/js/cart.js"></>
-        <script src='/js/cart.js'></script>
+<script src="/scr/public/js/cart.js"></script>
+<script src='/js/cart.js'></script>
