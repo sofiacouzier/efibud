@@ -14,7 +14,18 @@
             "program": "${workspaceFolder}/scr/app.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "env": {
+                "PORT": "8080",
+                "MONGO_URL": "mongodb+srv://sofiacouzier:123@cluster0.crz5vth.mongodb.net/?retryWrites=true&w=majority",
+                "PERSISTENCE": "MONGO",
+                "MAILER_USER": "soficouzier@gmail.com",
+                "MAILER_PASSWORD": "pfeccrglzjahkhvw",
+                "LOGGER": "dev",
+                "SUPERADMIN_EMAIL": "admim@admin.com",
+                "SUPERADMIN_PASSWORD": "123",
+                "JWT_SECRET": "jwtSecret",
+            }
         }
     ]
 }

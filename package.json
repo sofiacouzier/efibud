@@ -2,6 +2,9 @@
   "name": "copia-de-1er-desafio",
   "version": "1.0.0",
   "main": "ProductManager.js",
+  "engines": {
+    "node": ">=14 <17"
+  },
   "scripts": {
     "start": "node scr/app.js",
     "dev": "nodemon scr/app.js",
