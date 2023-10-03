@@ -48,7 +48,6 @@ const expired = async (req, res) => {
 
                 const mailingService = new MailingService();
                 const mail = mailingService.sendMail(user.email, DTemplates.EXPIRED, { user })
-                console.log("hola")
 
             } catch (error) {
                 console.log(error)

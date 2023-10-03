@@ -160,7 +160,7 @@ const createTicket = async (req, res) => {
         ticketService.createTicket(ticket)
         try {
             const mailingService = new MailingService();
-            const result = await mailingService.sendMail(user.user.email, DTemplates.TICKET, { ticket })
+            const result = await mailingService.sendMail(user.user.email, DTemplates.TICKET, { ticket, prodLeft })
             //decirle al cliente q se le envia un mail
         } catch (error) {
             console.log(error)

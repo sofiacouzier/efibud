@@ -1,3 +1,27 @@
 <div>
-    <h1>hola {{ticket.purchaser}} compraste y el precio es {{ticket.amount}}</h1>
+    <h1>hola {{ticket.purchaser}} compraste y el precio final es {{ticket.amount}}</h1>
+    <h3>los productos que compraste fueron:</h3>
+    {{#each ticket.products}}
+    <div class="product">
+        <img class="img" src={{this.thumbnail}}>
+        <h1 class="nombre">{{this.title}}</h1>
+        <h4 class="desc">precio:{{this.product.price}}</h4>
+        <br />
+        <h2>cantidad {{this.quantity}}</h2>
+    </div>
+    {{/each}}
+    {{#if prodLeft}}
+    <h3>los siguientes productos se eliminaron de la compra por falta de stock:</h3>
+    {{#each prodLeft}}
+    <div class="product">
+        <img class="img" src={{this.thumbnail}}>
+        <h1 class="nombre">{{this.title}}</h1>
+        <h4 class="desc">precio:{{this.product.price}}</h4>
+        <br />
+        <h2>cantidad {{this.quantity}}</h2>
+    </div>
+    {{/each}}
+    {{/if}}
+
+
 </div>
