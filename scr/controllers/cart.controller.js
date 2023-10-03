@@ -2,12 +2,16 @@ import { cartService } from "../services/index.js";
 import { productService } from "../services/index.js";
 import shortid from "shortid";
 import { ticketService } from "../services/index.js";
+import LoggerService from "../services/LoggerService.js";
+import DTemplates from '../constants/DTemplates.js';
+import MailingService from '../services/MailingServices.js';
 
+const logger = new LoggerService("dev")
 
 const getCartByID = async (req, res) => {
     const { cid } = req.params;
     const cart = await cartService.getCartByID({ _id: cid }).lean()
-    res.send(cart.products)
+    res.send({ status: 'success', payload: cart.products })
 };
 
 
@@ -18,8 +22,11 @@ const showCart = async (req, res) => {
     const prodInCart = cart.products
     const docs = prodInCart
     res.render('cart', {
+
         docs,
-        css: 'home'
+        css: 'home',
+        user: req.user,
+        cart: cid
     })
 }
 
@@ -27,6 +34,8 @@ const getCart = async (req, res) => {
     const cart = await cartService.getCart();
     res.send({ status: 'success', payload: cart })
 }
+
+
 
 const createCart = async (req, res) => {
     try {
@@ -44,10 +53,12 @@ const createCart = async (req, res) => {
 }
 
 const addProd = async (req, res) => {
+
     const pid = req.body.prodId
     const cid = req.user.user.cid
     const quantity = 1
     try {
+
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(200)
     } catch (error) {
@@ -58,7 +69,8 @@ const addProd = async (req, res) => {
 
 const addProdBack = async (req, res) => {
     const { cid, pid } = req.params;
-    const quantity = req.body || 1
+
+    const quantity = 1
     try {
         const result = await cartService.addProductsToCart(cid, pid, quantity);
         res.sendStatus(201)
@@ -74,6 +86,8 @@ const deleteCart = async (req, res) => {
     const cart = await cartService.deleteCart({ _id: cid });
     return res.send({ status: 'success' })
 }
+
+
 
 const deleteProd = async (req, res) => {
     const { cid } = req.params
@@ -98,7 +112,6 @@ const createTicket = async (req, res) => {
         const user = req.user
         const { cid } = req.params
         const cart = await cartService.getCartByID({ _id: cid }).lean().populate('products.product');
-        console.log(cart)
         const prod = cart.products
         const ticketProd = []
         let prodLeft = []
@@ -108,7 +121,7 @@ const createTicket = async (req, res) => {
             const result = await productService.updateProduct(pid, updatedProduct)
 
         }
-        async function cartupdate(cid, pid, newStock) {
+        async function cartupdate(cid, pid) {
             const response = await cartService.deleteProduct(cid, pid);
 
         }
@@ -120,7 +133,7 @@ const createTicket = async (req, res) => {
                 //console.log(pid, newStock)
                 try {
                     update(pid, updatedProduct)
-                    cartupdate(cid, pid, newStock)
+                    cartupdate(cid, pid)
                 } catch (error) {
                     console.log(error)
                 }
@@ -133,8 +146,7 @@ const createTicket = async (req, res) => {
                 console.log(`el producto ${p.product.title} no tiene suficiente stock`)
             }
         })
-        //console.log(acumulador)
-        //console.log(ticketProd)
+
         // Generar el código único
         const code = shortid.generate();
         const ticket = {
@@ -146,6 +158,14 @@ const createTicket = async (req, res) => {
         }
 
         ticketService.createTicket(ticket)
+        try {
+            const mailingService = new MailingService();
+            const result = await mailingService.sendMail(user.user.email, DTemplates.TICKET, { ticket })
+            //decirle al cliente q se le envia un mail
+        } catch (error) {
+            console.log(error)
+        }
+
         return res.send(prodLeft)
     } catch (error) {
         req.logger.error(error)

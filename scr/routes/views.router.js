@@ -9,10 +9,14 @@ const router = Router();
 router.get('/', passportCall("jwt", { strategyType: "jwt" }), productController.showProducts)
 
 
-
+//muestra todos lo mensajes del chat
 router.get('/chat', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), async (req, res) => {
     res.render('chat')
 })
+
+//si
+router.get('/cart', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
+
 
 
 router.get('/cart', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
@@ -52,12 +56,12 @@ router.get('/admin', passportCall('jwt', { redirect: '/login' }), authRoles('adm
 })
 
 
-router.get('/jwtProfile', passportCall('jwt', { redirect: '/login' }), (req, res) => {
-    res.render('jwtProfile', {
-        user: req.user
-    })
+// router.get('/jwtProfile', passportCall('jwt', { redirect: '/login' }), (req, res) => {
+//     res.render('jwtProfile', {
+//         user: req.user
+//     })
 
-})
+// })
 
 router.delete('/logout', async (req, res) => {
     console.log("eliminando sesion")

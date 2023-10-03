@@ -2,7 +2,7 @@ import userModel from "../models/users.js";
 
 export default class UsersManager {
     getUsers = (params) => {
-        return userModel.find(params).lean();
+        return userModel.find(params, " first_name last_name email role").lean();
     };
 
     getUserBy = (params) => {
@@ -16,8 +16,12 @@ export default class UsersManager {
     updateUser = (id, user) => {
         return userModel.findByIdAndUpdate(id, { $set: user });
     };
+    getExpiredUsers = (params) => {
+        return userModel.find(params).lean();
+    };
 
     deleteUser = (id) => {
         return userModel.findByIdAndDelete(id);
     };
+
 }

@@ -1,6 +1,14 @@
 import { productErrorIncompleteValues } from "../constants/productError.js";
 import productModel from "../dao/mongo/models/product.js";
 import { productService } from "../services/index.js";
+import ErrorService from "../services/ErrorServices.js";
+import LoggerService from "../services/LoggerService.js";
+import { userService } from "../services/index.js";
+import DTemplates from '../constants/DTemplates.js';
+import MailingService from '../services/MailingServices.js';
+
+const logger = new LoggerService("dev")
+
 
 const showProducts = async (req, res) => {
     try {
@@ -58,31 +66,70 @@ const addProducts = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const updateProduct = req.body
-        const id = Number(Object.values(req.params))
-        const result = await productService.updateProduct(id, updateProduct)
+        const id = req.params.pid
+        const prod = await productService.getProductsBy(id)
+        const owner = prod.owner
 
-        if (result.status === 'error') return res.status(400).send({ result });
+        const userRole = req.user.user.role
+        const product = req.body
+        if (userRole === "admin" || owner === req.user.user.email) {
+            const result = await productService.updateProduct(id, product)
+            console.log(result)
+            if (result.status === 'error') return res.status(400).send({ result });
+            return res.status(200).send({ message: "product updated" });
+        }
 
-        return res.status(200).send({ result });
+
+        return res.status(400).send({ message: "no auth" });
+
     } catch (error) {
+        console.log(error)
         req.logger.error(error)
     }
 }
 
 const deleteProduct = async (req, res) => {
+
+
     try {
-        const id = Number(Object.values(req.params))
-        const result = await productService.deleteProduct(id)
-        const everyProd = await productService.getProducts()
+        const id = req.params.pid
+        const prod = await productService.getProductsBy(id)
+        const owner = prod.owner
+        const userRole = req.user.user.role
 
-        if (result.status === 'error') return res.status(400).send({ result });
-        req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
+        const ownersRole = await userService.getUserBy({ email: owner })
+        console.log(ownersRole.role)
 
-        return res.status(200).send({ message: "producto eliminado" });
+        if (userRole === "admin" || owner === req.user.user.email) {
+            const result = await productService.deleteProduct(id)
+            const everyProd = await productService.getProducts()
+
+
+            if (ownersRole.role === "premium") {
+                try {
+
+                    const mailingService = new MailingService();
+                    const mail = await mailingService.sendMail(owner, DTemplates.DELETED, { ownersRole, prod })
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            if (result.status === 'error') return res.status(400).send({ result });
+            req.io.emit("entregando productos", everyProd)//envio los nuevos productos con el servidor que me paso desde el middleware
+
+
+
+
+            return res.status(200).send({ message: "producto eliminado" });
+
+        }
+
+        return res.status(400).send({ message: "no auth" });
+
 
     } catch (error) {
-        req.logger.error(error)
+        console.log(error)
     }
 }
 
@@ -98,17 +145,33 @@ const createProduct = async (req, res) => {
         })
         return res.status(400).send({ status: "error", error: "incomplete values" });
     }
+    if (req.user.user.role === "premium") {
+        const owner = req.user.user.email
+        const newProd = {
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock,
+            owner
+        }
+        const result = await productService.createProduct(newProd);
 
-    const newProd = {
-        title,
-        description,
-        price,
-        thumbnail,
-        code,
-        stock
-    };
+    } else {
 
-    const result = await productService.createProduct(newProd);
+        const newProd = {
+            title,
+            description,
+            price,
+            thumbnail,
+            code,
+            stock
+        }
+
+        const result = await productService.createProduct(newProd);
+    }
+
     res.sendStatus(201)
 }
 

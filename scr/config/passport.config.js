@@ -68,6 +68,7 @@ const initializePassportStrategies = () => {
             { usernameField: 'email' },
             async (email, password, done) => {
                 let resultUser;
+
                 try {
                     if (email === config.app.SUPERADMIN_EMAIL && password === config.app.SUPERADMIN_PASSWORD) {
                         //Acaba de entrar como SUPER ADMIN
@@ -75,10 +76,12 @@ const initializePassportStrategies = () => {
                             name: "Admin",
                             id: 0,
                             email: "admin@mail",
-                            role: 'superadmin'
+                            role: 'admin'
                         }
+                        //   console.log(resultUser)
                         return done(null, resultUser);
                     }
+
                     //buscar al usuario
                     const user = await userService.getUserBy({ email });
 
@@ -89,6 +92,10 @@ const initializePassportStrategies = () => {
                     if (!valid) {
                         return done(null, false, { message: 'Contraseña inválida' });
                     }
+                    const id = user._id.toString()
+                    const last = await userService.updateUser(id, { last_connection: Date.now() })
+
+
                     resultUser = new TokenDTO(user)
 
                     return done(null, resultUser);
@@ -132,6 +139,9 @@ const initializePassportStrategies = () => {
                             password: ''
                         }
                         const result = await userService.createUser(newUser);
+                        const id = user._id.toString()
+                        const last = await userService.updateUser(id, { last_connection: Date.now() })
+
                         done(null, result);
                     }
                     //Si el usuario ya existía

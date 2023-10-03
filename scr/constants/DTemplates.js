@@ -1,4 +1,7 @@
 export default {
     WELCOME: "welcome",
-    RESTORE: 'restore'
+    RESTORE: 'restore',
+    TICKET: "ticket",
+    DELETED: "deletedProd",
+    EXPIRED: "expiredUser"
 }

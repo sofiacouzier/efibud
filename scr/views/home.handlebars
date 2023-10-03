@@ -1,7 +1,21 @@
+<nav>
+    {{#unless user}}
+    <a href="/register"><button>registrarse</button></a>
+    <a href="/login"><button>loguerse</button></a>
+    {{/unless}}
+
+
+</nav>
+
+
 <h1 id="welcome"></h1>
 <h3 id="email"></h3>
 <h1 id="welcome">{{user.user.name}}</h1>
 <h3 id="email">{{user.user.email}}</h3>
+
+
+
+
 
 {{#if user}}
 <a href="/cart"><button>carrito</button></a>
@@ -15,7 +29,9 @@
         <h5 class="code">code:{{this.code}}</h5>
         <h4 class="desc">precio:{{this.price}}</h4>
         <br>
+
         <div><button type="button" data-id={{this.id}} class="agregar"> agregar al carrito</button></div>
+
         <br>
     </div>
     {{/each}}
@@ -28,6 +44,7 @@
     <a href="/?page={{nextPage}}"><button>Siguiente</button></a>
     {{/if}}
 </ul>
+
 {{#if user}}
 <a><button id="logout"> cerrar sesion</button>
     {{/if}}

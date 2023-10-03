@@ -4,6 +4,14 @@ export default {
     },
     restore: {
         subject: "restaurar contrasena"
+    },
+    ticket: {
+        subject: "compra"
+    },
+    deletedProd: {
+        subject: "producto eliminado"
+    },
+    expiredUser: {
+        subject: "sesion expirada"
     }
-
 }

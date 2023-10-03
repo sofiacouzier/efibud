@@ -14,7 +14,12 @@ const schema = new mongoose.Schema({
     role: {
         type: String,
         default: "usuario"
-    }
+    },
+    last_connection: {
+        type: Date,
+        default: Date.now,
+    },
+
 })
 
 const userModel = mongoose.model(collection, schema);

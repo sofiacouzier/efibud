@@ -1,19 +1,23 @@
 import { Router } from "express";
-import ProductService from "../services/repositories/product.service.js";
 import productController from "../controllers/product.controller.js";
 import { authRoles } from "../middlewares/auth.js";
+import { passportCall } from "../services/auth.js";
 const router = Router();
 
+//FUNCIONA
 router.get('/', productController.getProducts)
 
+//FUNCIONA
+router.post('/', passportCall("jwt", { strategyType: "jwt" }), authRoles('admin, premium'), productController.createProduct)
 
-router.post('/', authRoles('admin'), productController.createProduct)
-
+//FUNCIONA
 router.get('/:pid', productController.getProductByID)
 
-router.put('/:pid', authRoles('admin'), productController.updateProduct)
+//FUNCIONA
+router.put('/:pid', passportCall("jwt", { strategyType: "jwt" }), authRoles('admin, premium'), productController.updateProduct)
 
-router.delete('/:pid', authRoles('admin'), productController.deleteProduct)
+//FUNCIONA
+router.delete('/:pid', passportCall("jwt", { strategyType: "jwt" }), authRoles('admin, premium'), authRoles('admin, premium'), productController.deleteProduct)
 
 
 export default router

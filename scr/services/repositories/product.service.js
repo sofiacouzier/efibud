@@ -18,8 +18,8 @@ export default class ProductService {
     deleteProduct = (prod) => {
         return this.dao.deleteProduct(prod);
     }
-    updateProduct = (pid) => {
-        return this.dao.updateProduct(pid);
+    updateProduct = (pid, product) => {
+        return this.dao.updateProduct(pid, product);
     }
     addProducts = () => {
         return this.dao.addProducts()

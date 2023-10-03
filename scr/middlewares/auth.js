@@ -29,9 +29,11 @@ export const privacy = (privacyType) => {
 
 // necesito crear autorizacion segun roles:
 
-export const authRoles = (role) => {
+export const authRoles = (roles) => {
     return async (req, res, next) => {
-        if (req.user.role != role) return res.status(403).send({ status: "error", error: "Fobidden" })
+        const allowedRoles = roles.split(',').map(role => role.trim());
+        if (!allowedRoles.includes(req.user.user.role)) return res.status(403).send({ status: "error", error: "Fobidden" })
         next();
+
     }
 }

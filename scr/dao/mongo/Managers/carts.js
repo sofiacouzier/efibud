@@ -3,9 +3,8 @@ import EErors from "../../../constants/EErrors.js";
 import mongoose from "mongoose";
 import cartModel from "../models/cart.js";
 import ProductsManager from "./products.js";
-
-const productsService = new ProductsManager();
-
+import ProductService from "../../../services/repositories/product.service.js";
+import { productService } from "../../../services/index.js";
 export default class CartsManager {
     getCart = () => {
         return cartModel.find().lean();
@@ -17,34 +16,48 @@ export default class CartsManager {
         return cartModel.create(cart)
     }
     deleteCart = (cid) => {
-        return cartModel.findByIdAndUpdate(cid, { products: [] })
+        return cartModel.findByIdAndDelete(cid)
     }
 
     addProductsToCart = async (cid, pid, quantity) => {
-        const cart = await cartModel.findOne({ _id: cid }).lean();
 
-        if (cart) {
+        try {
+            const cart = await cartModel.findOne({ _id: cid })
             const prodInCart = cart.products
+
             const proadded = prodInCart.find(({ product }) => product._id == pid)
-            if (proadded.stock < 0) {
-                ErrorsService.createError({
-                    name: "Error al agregar producto al carrito",
-                    cause: noStock(proadded),
-                    code: EErors.NO_STOCK,
-                    status: 400
-                })
-            }
+
+            const product = await productService.getProductsBy(pid)
+
             if (proadded) {
+                if (proadded.quantity >= product.stock) {
+                    return console.log("no hay suficiente stock")
+                }
                 const newQ = Number(proadded.quantity) + Number(quantity)
                 proadded.quantity = newQ
 
                 return cartModel.updateOne({ _id: cid }, cart)
-            } else {
-                return cartModel.updateOne({ _id: cid }, { $push: { products: { product: new mongoose.Types.ObjectId(pid), quantity: quantity } } })
             }
+
+            if (quantity >= product.stock) {
+                return console.log("no hay suficiente stock")
+            }
+            await cartModel.updateOne(
+                { _id: cid }, { $push: { products: { product: new mongoose.Types.ObjectId(pid), quantity: quantity } } })
+            return await cartModel.findOne({ _id: cid })
+
+
+        }
+
+        catch (err) {
+
+            return err
 
         }
     }
+
+
+
     updateQuantity = async (cid, pid, quantity) => {
         const cart = await cartModel.findOne({ _id: cid }).lean();
         const prodInCart = cart.products
@@ -61,11 +74,21 @@ export default class CartsManager {
     deleteProduct = async (cid, pid) => {
         const cart = await cartModel.findOne({ _id: cid }).lean();
         const prodInCart = cart.products
-        const p = prodInCart.find(({ product }) => product._id == pid)
+        const id = pid.toString()
+
+        const p = prodInCart.find(({ product }) => product.toString() == id)
+
         if (p) {
-            const newP = prodInCart.splice(prodInCart.findIndex(({ product }) => product._id == pid))
-            cart.products = newP
-            return await cartModel.updateOne({ _id: cid }, cart)
+            const indexToRemove = prodInCart.findIndex(({ product }) => product.toString() === pid.toString());
+            if (indexToRemove !== -1) {
+                const newP = prodInCart.splice(indexToRemove, 1);
+                cart.products = prodInCart;  // Asigna el array modificado a cart.products
+                console.log(cart.products);
+                return await cartModel.updateOne({ _id: cid }, cart);
+            } else {
+                console.log("No se encontró el producto en el carrito.");
+                return cartModel.findOne({ _id: cid });  // Devuelve el carrito actualizado o original
+            }
         } else {
             console.log("no existe el producto en el carrito")
         }

@@ -1,21 +1,40 @@
-import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
 import { passportCall } from "../services/auth.js";
 import { privacy } from "../middlewares/auth.js";
-import BaseRouter from "./Router.js";
+import { Router } from "express";
 
-export default class CartRouter extends BaseRouter {
-    init() {
-        this.post('/', ["PRIVATE"], cartController.createCart)
-        this.get('/', ["PRIVATE"], cartController.getCart);
-        this.post('/:cid/product/:pid', ["PRIVATE"], passportCall("jwt", { strategyType: "jwt" }), cartController.addProdBack)
-        this.post('/agregar', ["PRIVATE"], passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProd)
-        this.get('/:cid', ["PRIVATE"], cartController.getCartByID)
-        this.delete('/:cid', ["PRIVATE"], cartController.deleteCart)
-        this.delete('/:cid/products/:pid', ["PRIVATE"], cartController.deleteProd)
-        this.put('/:cid/products/:pid', ["PRIVATE"], cartController.updateQ)
-        this.post("/:cid/purchase", ["PRIVATE"], passportCall("jwt", { strategyType: "jwt" }), cartController.createTicket)
 
-    }
-}
+const router = Router();
+//funciona
+router.get('/', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.getCart)
 
+//funciona
+router.post('/', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.createCart)
+
+//funciona
+router.delete('/:cid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.deleteCart)
+
+//funciona
+router.get('/:cid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.getCartByID)
+
+//funciona
+router.get('/', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.showCart)
+
+//funciona f
+router.post('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProdBack)
+
+
+//funciona
+router.delete('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.deleteProd)
+
+//funciona
+router.put('/:cid/product/:pid', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.updateQ)
+
+//funciona
+router.post('/agregar', passportCall("jwt", { strategyType: "jwt" }), privacy('PRIVATE'), cartController.addProd)
+
+
+//funciona
+router.post("/:cid/purchase", passportCall("jwt", { strategyType: "jwt" }), privacy("PRIVATE"), cartController.createTicket)
+
+export default router
