@@ -13,7 +13,7 @@ const logger = new LoggerService("dev")
 const showProducts = async (req, res) => {
     try {
         const { sort = 1 } = req.query
-        const { lim = 10 } = Number(Object.values(req.body))
+        const { lim = 9 } = Number(Object.values(req.body))
         const { page = 1 } = req.query;
 
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } = await productModel.paginate({}, { page, limit: lim, lean: true, sort: { price: sort } });

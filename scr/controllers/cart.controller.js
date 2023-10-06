@@ -116,7 +116,6 @@ const createTicket = async (req, res) => {
         const ticketProd = []
         let prodLeft = []
         let acumulador = 0
-        // console.log(prod)
         async function update(pid, updatedProduct) {
             const result = await productService.updateProduct(pid, updatedProduct)
 
@@ -130,7 +129,6 @@ const createTicket = async (req, res) => {
                 let pid = p.product._id
                 let newStock = p.product.stock - p.quantity
                 let updatedProduct = { stock: newStock }
-                //console.log(pid, newStock)
                 try {
                     update(pid, updatedProduct)
                     cartupdate(cid, pid)
