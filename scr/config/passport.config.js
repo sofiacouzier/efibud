@@ -4,7 +4,7 @@ import { cookieExtractor } from '../utils.js';
 import { createHash, validatePassword } from '../services/auth.js';
 import GithubStrategy from 'passport-github2';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { cartService, userService } from '../services/index.js';
+import { userService } from '../services/index.js';
 import TokenDTO from '../dto/user/TokenDto.js';
 import ErrorService from '../services/ErrorServices.js';
 import { userErrorIncompleteValues } from '../constants/userError.js';
@@ -20,7 +20,7 @@ const initializePassportStrategies = () => {
             { passReqToCallback: true, usernameField: 'email' },
             async (req, email, password, done) => {
                 try {
-                    const { first_name, last_name, role } = req.body;
+                    const { name } = req.body;
 
 
                     // el usuario ya existe?
@@ -28,20 +28,17 @@ const initializePassportStrategies = () => {
                     if (exists)
                         return done(null, false, { message: 'El usuario ya existe' });
                     //no existe
-                    const hashedPassword = await createHash(password);
+                    //const hashedPassword = await createHash(password);
                     //Número 3! Construimos el usuario que voy a registrar
                     const c = {
                         products: []
                     };
-                    const carts = await cartService.createCart(c)
 
                     const user = {
-                        first_name,
-                        last_name,
+                        name,
                         email,
-                        role,
-                        cart: carts.id,
-                        password: hashedPassword,
+                        password
+                        //password: hashedPassword,
                     };
 
                     const result = await userService.createUser(user);
@@ -49,10 +46,10 @@ const initializePassportStrategies = () => {
                     return done(null, result)
                 } catch (error) {
                     req.logger.error(error)
-                    if (!first_name || !email || !password) {
+                    if (!name || !email || !password) {
                         ErrorService.createError({
                             name: "error de creacion",
-                            cause: userErrorIncompleteValues(first_name, email, password),
+                            cause: userErrorIncompleteValues(name, email, password),
                             message: "error intentando registrar un usuario",
                             code: EErors.INCOMPLETE_VALUES
                         })
@@ -70,17 +67,7 @@ const initializePassportStrategies = () => {
                 let resultUser;
 
                 try {
-                    if (email === config.app.SUPERADMIN_EMAIL && password === config.app.SUPERADMIN_PASSWORD) {
-                        //Acaba de entrar como SUPER ADMIN
-                        resultUser = {
-                            name: "Admin",
-                            id: 0,
-                            email: "admin@mail",
-                            role: 'admin'
-                        }
-                        //   console.log(resultUser)
-                        return done(null, resultUser);
-                    }
+
 
                     //buscar al usuario
                     const user = await userService.getUserBy({ email });
@@ -88,12 +75,14 @@ const initializePassportStrategies = () => {
                     if (!user) return done(null, false, { message: 'Credenciales incorrectas' });
                     //Número 2!!!! si sí existe el usuario, verificar password.
 
-                    const valid = await validatePassword(password, user.password)
-                    if (!valid) {
+
+                    // const valid = await validatePassword(password, user.password)
+                    //if (!valid)
+                    if (user.password != password) {
+
                         return done(null, false, { message: 'Contraseña inválida' });
                     }
                     const id = user._id.toString()
-                    const last = await userService.updateUser(id, { last_connection: Date.now() })
 
 
                     resultUser = new TokenDTO(user)
@@ -118,39 +107,6 @@ const initializePassportStrategies = () => {
             }
 
         ))
-    passport.use('github',
-        new GithubStrategy(
-            {
-                clientID: 'Iv1.34b35ad96487fcab',
-                clientSecret: 'e668e0195c60394abfb251de2e0a496137baea85',
-                callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
-            },
-            async (accessToken, refreshToken, profile, done) => {
-                try {
-                    //Tomo los datos que me sirvan.
-                    const { name, email } = profile._json;
-                    const user = await userService.getUserBy({ email });
-                    //DEBO GESTIONAR AMBAS LÓGICAS AQUÍ, OMG!!!
-                    if (!user) {
-                        //No existe? lo creo entonces.
-                        const newUser = {
-                            first_name: name,
-                            email,
-                            password: ''
-                        }
-                        const result = await userService.createUser(newUser);
-                        const id = user._id.toString()
-                        const last = await userService.updateUser(id, { last_connection: Date.now() })
-
-                        done(null, result);
-                    }
-                    //Si el usuario ya existía
-                    done(null, user);
-                } catch (error) {
-                    done(error);
-                }
-            }
-        ))
     //verifico token de manera mas prolija
     passport.use('jwt', new Strategy({
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
@@ -165,7 +121,6 @@ const initializePassportStrategies = () => {
         }
 
     }))
-
 
 
 }

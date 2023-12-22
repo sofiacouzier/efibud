@@ -3,23 +3,9 @@ import mongoose, { Mongoose } from "mongoose";
 const collection = "Users";
 
 const schema = new mongoose.Schema({
-    first_name: String,
-    last_name: String,
+    name: String,
     email: String,
     password: String,
-    cart: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "carts"
-    },
-    role: {
-        type: String,
-        default: "usuario"
-    },
-    last_connection: {
-        type: Date,
-        default: Date.now,
-    },
-
 })
 
 const userModel = mongoose.model(collection, schema);
