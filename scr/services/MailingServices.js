@@ -18,7 +18,7 @@ export default class MailingService {
         const mailInfo = DMails[template];
         const html = await generateMailTemplate(template, payload);
         const result = await this.mailer.sendMail({
-            from: 'spfart soficouzier@gmail.com',
+            from: 'Efibud matkorussovich@gmail.com',
             to: emails,
             html,
             ...mailInfo

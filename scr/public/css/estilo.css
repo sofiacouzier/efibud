@@ -331,6 +331,29 @@ ul {
   border-color: rgb(14, 7, 138);
 }
 
+.restore {
+  background-color: #041045;
+  width: 70vw;
+  height: 55vh;
+  background-color: #252527;
+  border-radius: 10px;
+  text-align: center;
+  font-display: inherit;
+  color: white;
+  padding: 60px;
+}
+
+.new {
+  background-color: #041045;
+  width: 70vw;
+  height: 50vh;
+  background-color: #252527;
+  border-radius: 10px;
+  text-align: center;
+  font-display: inherit;
+  color: white;
+  padding: 60px;
+}
 
 @keyframes t {
   0% {
